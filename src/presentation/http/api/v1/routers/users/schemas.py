@@ -4,6 +4,7 @@ from src.domain.user.enums import UserType
 
 
 class UserRead(BaseModel):
+    id: str
     full_name: str
     phone_number: str
     email: str
