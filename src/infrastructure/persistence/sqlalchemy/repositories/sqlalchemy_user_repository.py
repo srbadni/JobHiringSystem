@@ -1,11 +1,12 @@
 from sqlalchemy import select, exists
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from application.users.ports.user_repository import UserRepository
 from domain.user.models import User
 from infrastructure.persistence.sqlalchemy.models.user import User as UserModel
 
 
-class SqlAlchemyUserRepository:
+class SqlAlchemyUserRepository(UserRepository):
 
     def __init__(self, session: AsyncSession):
         self.session = session
