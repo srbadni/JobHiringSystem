@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
+from uuid import UUID
 
-from sqlalchemy import Integer, ForeignKey, String
+from sqlalchemy import Integer, ForeignKey, String, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from infrastructure.persistence.sqlalchemy.base import Base
@@ -18,8 +19,8 @@ class JobApplication(Base):
     folder_id: Mapped[int | None] = mapped_column(
         Integer, ForeignKey("job_applications_folder.id"), nullable=True
     )
-    applicant_id: Mapped[int] = mapped_column(
-        Integer,
+    applicant_id: Mapped[UUID] = mapped_column(
+        Uuid,
         ForeignKey(
             "users.id",
             ondelete="CASCADE",

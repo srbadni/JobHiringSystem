@@ -1,8 +1,9 @@
 """Database metadata for privately stored files."""
 
 from typing import TYPE_CHECKING
+from uuid import UUID
 
-from sqlalchemy import BigInteger, CheckConstraint, ForeignKey, Integer, String
+from sqlalchemy import BigInteger, CheckConstraint, ForeignKey, Integer, String, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from infrastructure.persistence.sqlalchemy.base import Base
@@ -25,8 +26,8 @@ class Media(Base):
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, init=False)
-    owner_id: Mapped[int] = mapped_column(
-        Integer,
+    owner_id: Mapped[UUID] = mapped_column(
+        Uuid,
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
