@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
+from uuid import UUID
 
-from sqlalchemy import ForeignKey, Integer, String, Text
+from sqlalchemy import ForeignKey, Integer, String, Text, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from domain.applicant_profile.enum import Gender, MartialStatus
@@ -21,8 +22,8 @@ class ApplicantProfile(Base):
     __tablename__ = "applicant_profiles"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, init=False)
-    applicant_id: Mapped[int] = mapped_column(
-        Integer,
+    applicant_id: Mapped[UUID] = mapped_column(
+        Uuid,
         ForeignKey("users.id", ondelete="CASCADE",),
         nullable=False,
         unique=True,
