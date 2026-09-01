@@ -1,8 +1,8 @@
 """initial create tables
 
-Revision ID: fa2619a5fad8
+Revision ID: 95847c56f28d
 Revises: 
-Create Date: 2026-08-31 11:07:18.515655
+Create Date: 2026-09-01 09:57:29.781311
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'fa2619a5fad8'
+revision: str = '95847c56f28d'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -52,14 +52,14 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('users',
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('full_name', sa.String(length=90), nullable=False),
     sa.Column('phone_number', sa.String(length=11), nullable=False),
     sa.Column('email', sa.String(length=50), nullable=False),
     sa.Column('hashed_password', sa.String(length=100), nullable=False),
-    sa.Column('profile_image_url', sa.String(), nullable=False),
+    sa.Column('profile_image_url', sa.String(), nullable=True),
     sa.Column('is_superuser', sa.Boolean(), nullable=False),
-    sa.Column('user_type', sa.String(length=20), nullable=False),
+    sa.Column('user_type', sa.Enum('applicant', 'employer', name='usertype'), nullable=False),
     sa.Column('email_verified', sa.Boolean(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
@@ -74,7 +74,7 @@ def upgrade() -> None:
     )
     op.create_table('media',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('owner_id', sa.Integer(), nullable=False),
+    sa.Column('owner_id', sa.Uuid(), nullable=False),
     sa.Column('category', sa.String(length=32), nullable=False),
     sa.Column('original_name', sa.String(length=255), nullable=False),
     sa.Column('storage_key', sa.String(length=255), nullable=False),
@@ -91,7 +91,7 @@ def upgrade() -> None:
     op.create_index(op.f('ix_media_storage_key'), 'media', ['storage_key'], unique=True)
     op.create_table('applicant_profiles',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('applicant_id', sa.Integer(), nullable=False),
+    sa.Column('applicant_id', sa.Uuid(), nullable=False),
     sa.Column('attached_resume_id', sa.Integer(), nullable=True),
     sa.Column('specialization', sa.String(length=100), nullable=True),
     sa.Column('birth_year', sa.Integer(), nullable=True),
@@ -134,7 +134,7 @@ def upgrade() -> None:
     )
     op.create_table('company_memberships',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.Uuid(), nullable=False),
     sa.Column('company_id', sa.Integer(), nullable=False),
     sa.Column('is_admin', sa.Boolean(), nullable=False),
     sa.ForeignKeyConstraint(['company_id'], ['companies.id'], ondelete='CASCADE'),
@@ -218,7 +218,7 @@ def upgrade() -> None:
     op.create_table('job_applications',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('folder_id', sa.Integer(), nullable=True),
-    sa.Column('applicant_id', sa.Integer(), nullable=False),
+    sa.Column('applicant_id', sa.Uuid(), nullable=False),
     sa.Column('job_posting_id', sa.Integer(), nullable=False),
     sa.Column('status', sa.String(length=50), nullable=False),
     sa.ForeignKeyConstraint(['applicant_id'], ['users.id'], ondelete='CASCADE'),

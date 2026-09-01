@@ -1,10 +1,21 @@
 from fastapi import FastAPI
 
-from src.presentation.http.api.router import router as api_router
+from bootstrap.providers import provide_create_user_handler
+from presentation.http.api.v1.routers.users.router import (
+    create_users_router,
+)
 
 
 def create_app() -> FastAPI:
-    """Create and configure the HTTP application."""
-    application = FastAPI(title="Job Hiring System")
-    application.include_router(api_router)
-    return application
+    app = FastAPI(title="Job Hiring System")
+
+    users_router = create_users_router(
+        provide_create_user_handler=provide_create_user_handler,
+    )
+
+    app.include_router(
+        users_router,
+        prefix="/api/v1/users",
+    )
+
+    return app

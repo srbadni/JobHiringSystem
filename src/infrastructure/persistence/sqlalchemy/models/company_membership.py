@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
+from uuid import UUID
 
-from sqlalchemy import Boolean, ForeignKey, Integer
+from sqlalchemy import Boolean, ForeignKey, Integer, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from infrastructure.persistence.sqlalchemy.base import Base
@@ -21,8 +22,8 @@ class CompanyMembership(Base):
         init=False,
     )
 
-    user_id: Mapped[int] = mapped_column(
-        Integer,
+    user_id: Mapped[UUID] = mapped_column(
+        Uuid,
         ForeignKey("users.id"),
         unique=True,
         nullable=False,

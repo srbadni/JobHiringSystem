@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
+from uuid import UUID
 
-from sqlalchemy import Integer, String
+from sqlalchemy import String, Uuid, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from domain.user.enums import UserType
@@ -16,7 +17,7 @@ if TYPE_CHECKING:
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, init=False)
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
 
     full_name: Mapped[str] = mapped_column(
         String(90),
@@ -36,17 +37,21 @@ class User(Base):
         String(100),
     )
 
-    profile_image_url: Mapped[str] = mapped_column(
+    profile_image_url: Mapped[str | None] = mapped_column(
         String,
+        default=None
     )
 
     is_superuser: Mapped[bool] = mapped_column(
         default=False,
     )
 
-    user_type: Mapped[str] = mapped_column(
-        String(20),
-        default=UserType.APPLICANT.value,
+    user_type: Mapped[UserType] = mapped_column(
+        Enum(
+            UserType,
+            values_callable=lambda enum: [item.value for item in enum]
+        ),
+        default=UserType.APPLICANT,
     )
 
     email_verified: Mapped[bool] = mapped_column(
