@@ -1,8 +1,10 @@
+from types import TracebackType
 from typing import Any
 
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
 from application.common.ports.unit_of_work import UnitOfWork
+from infrastructure.persistence.sqlalchemy.repositories.sqlalchemy_company_repository import SQLAlchemyCompanyRepository
 from .repositories.sqlalchemy_user_repository import (
     SqlAlchemyUsersRepository,
 )
@@ -16,12 +18,13 @@ class SqlAlchemyUnitOfWork(UnitOfWork):
     async def __aenter__(self):
         self.session = self.session_factory()
         self.users = SqlAlchemyUsersRepository(self.session)
+        self.companies = SQLAlchemyCompanyRepository(self.session)
 
         return self
 
-    async def __aexit__(self, exc_type, exc_value, traceback):
+    async def __aexit__(self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: TracebackType | None):
         try:
-            await super().__aexit__(exc_type, exc_value, traceback)
+            await super().__aexit__(exc_type, exc_val, exc_tb)
         finally:
             await self.session.close()
 

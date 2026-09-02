@@ -44,7 +44,6 @@ def create_users_router(
             email=user_data.email,
             password=user_data.password,
             profile_image_url=user_data.profile_image_url,
-            user_type=user_data.user_type,
         )
 
         return await command_handler.handle(command)

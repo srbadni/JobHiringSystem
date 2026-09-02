@@ -8,6 +8,7 @@ from infrastructure.persistence.sqlalchemy.unit_of_work import (
 from infrastructure.security.pwdlib_password_hasher import (
     PwdlibPasswordHasher,
 )
+from application.employer_registration.handlers.create_employer_and_company_handler import CreateEmployerAndCompanyHandler
 
 
 password_hasher = PwdlibPasswordHasher()
@@ -38,4 +39,10 @@ def provide_get_user_by_id_handler() -> GetUserByIdQueryHandler:
 def provide_get_user_by_email_handler() -> GetUserByEmailQueryHandler:
     return GetUserByEmailQueryHandler(
         uow=provide_uow(),
+    )
+
+def provide_create_employer_and_company_handler() -> CreateEmployerAndCompanyHandler:
+    return CreateEmployerAndCompanyHandler(
+        uow=provide_uow(),
+        hasher=password_hasher,
     )

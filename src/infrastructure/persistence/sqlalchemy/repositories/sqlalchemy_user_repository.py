@@ -61,5 +61,6 @@ class SqlAlchemyUsersRepository(UsersRepository):
         )
 
         self.session.add(model)
+        await self.session.flush()
 
         return self._to_domain(model)
