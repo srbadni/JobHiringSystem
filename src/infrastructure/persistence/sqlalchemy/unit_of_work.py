@@ -1,3 +1,7 @@
+from typing import Any
+
+from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
+
 from application.common.ports.unit_of_work import UnitOfWork
 from .repositories.sqlalchemy_user_repository import (
     SqlAlchemyUsersRepository,
@@ -6,7 +10,7 @@ from .session import AsyncSessionLocal
 
 
 class SqlAlchemyUnitOfWork(UnitOfWork):
-    def __init__(self, session_factory):
+    def __init__(self, session_factory: async_sessionmaker[AsyncSession | Any]):
         self.session_factory = session_factory
 
     async def __aenter__(self):

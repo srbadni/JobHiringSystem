@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
-from bootstrap.providers import provide_create_user_handler
+from bootstrap.providers import provide_create_user_handler, provide_get_all_users_handler, \
+    provide_get_user_by_id_handler, provide_get_user_by_email_handler
 from presentation.http.api.v1.routers.users.router import (
     create_users_router,
 )
@@ -11,6 +12,9 @@ def create_app() -> FastAPI:
 
     users_router = create_users_router(
         provide_create_user_handler=provide_create_user_handler,
+        provide_get_all_users_handler=provide_get_all_users_handler,
+        provide_get_user_by_id_handler=provide_get_user_by_id_handler,
+        provide_get_user_by_email_handler=provide_get_user_by_email_handler,
     )
 
     app.include_router(
