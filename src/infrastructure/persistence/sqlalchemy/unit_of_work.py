@@ -7,6 +7,7 @@ from application.common.ports.unit_of_work import UnitOfWork
 from infrastructure.persistence.sqlalchemy.repositories.sqlalchemy_company_repository import SQLAlchemyCompanyRepository
 from infrastructure.persistence.sqlalchemy.repositories.sqlalchemy_company_membership_repository import SqlAlchemyCompanyMembershipRepository
 from infrastructure.persistence.sqlalchemy.repositories.sqlalchemy_job_posting_repository import SqlAlchemyJobPostingRepository
+from infrastructure.persistence.sqlalchemy.repositories.sqlalchemy_jobs_search_repository import SQLAlchemyJobsSearchRepository
 from .repositories.sqlalchemy_user_repository import (
     SqlAlchemyUsersRepository,
 )
@@ -23,6 +24,7 @@ class SqlAlchemyUnitOfWork(UnitOfWork):
         self.companies = SQLAlchemyCompanyRepository(self.session)
         self.company_memberships = SqlAlchemyCompanyMembershipRepository(self.session)
         self.job_postings = SqlAlchemyJobPostingRepository(self.session)
+        self.jobs_search = SQLAlchemyJobsSearchRepository(self.session)
 
         return self
 

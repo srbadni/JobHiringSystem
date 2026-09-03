@@ -1,0 +1,22 @@
+from abc import ABC, abstractmethod
+from dataclasses import dataclass
+
+from application.jobs_search.dto.job_search_result import JobSearchResult
+from domain.job_posting.enum import WorkMode, RelevantWorkExperience
+
+
+@dataclass(slots=True)
+class GetJobsQueries:
+    keywords: str | None = None
+    province_ids: list[int] | None = None
+    job_category_ids: list[int] | None = None
+    work_modes: list[WorkMode] | None = None
+    work_experiences: list[RelevantWorkExperience] | None = None
+    salary_range_ids: list[int] | None = None
+
+
+class JobsSearchRepository(ABC):
+
+    @abstractmethod
+    async def get_jobs(self, queries: GetJobsQueries) -> list[JobSearchResult]:
+        pass

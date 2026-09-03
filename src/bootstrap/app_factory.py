@@ -16,11 +16,15 @@ from bootstrap.users_providers import (
     provide_get_user_by_email_handler,
     provide_get_user_by_id_handler,
 )
+from bootstrap.jobs_result_providers import (
+    provide_jobs_result_handler
+)
 from presentation.http.api.v1.routers.users.router import (
     create_users_router,
 )
 from presentation.http.api.v1.routers.employer.router import create_employer_router
 from presentation.http.api.v1.routers.job_postings.router import create_job_postings_router
+from presentation.http.api.v1.routers.jobs_result.router import create_jobs_result_router
 
 
 def create_app() -> FastAPI:
@@ -45,6 +49,10 @@ def create_app() -> FastAPI:
         provide_delete_job_posting_handler=provide_delete_job_posting_handler,
     )
 
+    jobs_result_router = create_jobs_result_router(
+        provide_jobs_result_handler=provide_jobs_result_handler,
+    )
+
     app.include_router(
         users_router,
         prefix="/api/v1/users",
@@ -58,6 +66,11 @@ def create_app() -> FastAPI:
     app.include_router(
         job_postings_router,
         prefix="/api/v1/job_postings",
+    )
+
+    app.include_router(
+        jobs_result_router,
+        prefix="/api/v1/jobs_result",
     )
 
     return app
