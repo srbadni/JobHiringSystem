@@ -16,6 +16,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "import-linter>=2.14",
     "pyright>=1.1.411",
 ]
 
@@ -39,3 +40,24 @@ venv = ".venv"
 
 reportMissingTypeStubs = false
 reportUnnecessaryTypeIgnoreComment = "warning"
+
+[tool.importlinter]
+
+root_packages = [
+    "bootstrap",
+    "presentation",
+    "infrastructure",
+    "application",
+    "domain",
+]
+
+[[tool.importlinter.contracts]]
+name = "Clean Architecture"
+type = "layers"
+
+layers = [
+    "bootstrap",
+    "presentation | infrastructure",
+    "application",
+    "domain",
+]
