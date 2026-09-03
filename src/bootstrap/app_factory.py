@@ -1,7 +1,14 @@
 from fastapi import FastAPI
 
-from bootstrap.providers import provide_create_user_handler, provide_get_all_users_handler, \
-    provide_get_user_by_id_handler, provide_get_user_by_email_handler, provide_create_employer_and_company_handler
+from bootstrap.employer_registration_providers import (
+    provide_create_employer_and_company_handler,
+)
+from bootstrap.users_providers import (
+    provide_create_user_handler,
+    provide_get_all_users_handler,
+    provide_get_user_by_email_handler,
+    provide_get_user_by_id_handler,
+)
 from presentation.http.api.v1.routers.users.router import (
     create_users_router,
 )
