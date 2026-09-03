@@ -2,6 +2,7 @@
 name = "jobhiringsystem"
 version = "0.1.0"
 requires-python = ">=3.14"
+
 dependencies = [
     "alembic>=1.19.1",
     "asyncpg>=0.31.0",
@@ -10,4 +11,53 @@ dependencies = [
     "pydantic-settings>=2.15.0",
     "sqlalchemy[asyncio]>=2.0.52",
     "uvicorn>=0.52.4",
+]
+
+
+[dependency-groups]
+dev = [
+    "import-linter>=2.14",
+    "pyright>=1.1.411",
+]
+
+
+[tool.pyright]
+pythonVersion = "3.14"
+typeCheckingMode = "strict"
+
+include = [
+    "src",
+]
+
+exclude = [
+    "**/__pycache__",
+    ".venv",
+    "alembic/versions",
+]
+
+venvPath = "."
+venv = ".venv"
+
+reportMissingTypeStubs = false
+reportUnnecessaryTypeIgnoreComment = "warning"
+
+[tool.importlinter]
+
+root_packages = [
+    "bootstrap",
+    "presentation",
+    "infrastructure",
+    "application",
+    "domain",
+]
+
+[[tool.importlinter.contracts]]
+name = "Clean Architecture"
+type = "layers"
+
+layers = [
+    "bootstrap",
+    "presentation | infrastructure",
+    "application",
+    "domain",
 ]

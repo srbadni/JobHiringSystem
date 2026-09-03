@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+from uuid import UUID
 
 from sqlalchemy import (
     Boolean,
@@ -6,7 +7,7 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
-    Text,
+    Text, Uuid,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -35,7 +36,8 @@ class JobPosting(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, init=False, autoincrement=True)
 
-    company_id: Mapped[int] = mapped_column(
+    company_id: Mapped[UUID] = mapped_column(
+        Uuid,
         ForeignKey("companies.id"),
         nullable=False,
     )

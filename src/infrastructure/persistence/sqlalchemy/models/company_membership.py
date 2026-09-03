@@ -29,8 +29,8 @@ class CompanyMembership(Base):
         nullable=False,
     )
 
-    company_id: Mapped[int] = mapped_column(
-        Integer,
+    company_id: Mapped[UUID] = mapped_column(
+        Uuid,
         ForeignKey("companies.id", ondelete="CASCADE",),
         nullable=False,
     )

@@ -2,7 +2,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field
 
-from src.domain.user.enums import UserType
+from domain.user.enums import UserType
 
 
 class UserRead(BaseModel):

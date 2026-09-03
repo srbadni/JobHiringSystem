@@ -1,8 +1,8 @@
 """initial create tables
 
-Revision ID: 95847c56f28d
+Revision ID: 2bbfb7b86d85
 Revises: 
-Create Date: 2026-09-01 09:57:29.781311
+Create Date: 2026-09-02 17:50:06.421278
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '95847c56f28d'
+revision: str = '2bbfb7b86d85'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -108,7 +108,7 @@ def upgrade() -> None:
     sa.UniqueConstraint('attached_resume_id')
     )
     op.create_table('companies',
-    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('name', sa.String(length=120), nullable=False),
     sa.Column('persian_name', sa.String(length=120), nullable=False),
     sa.Column('province_id', sa.Integer(), nullable=False),
@@ -135,7 +135,7 @@ def upgrade() -> None:
     op.create_table('company_memberships',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Uuid(), nullable=False),
-    sa.Column('company_id', sa.Integer(), nullable=False),
+    sa.Column('company_id', sa.Uuid(), nullable=False),
     sa.Column('is_admin', sa.Boolean(), nullable=False),
     sa.ForeignKeyConstraint(['company_id'], ['companies.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
@@ -158,7 +158,7 @@ def upgrade() -> None:
     )
     op.create_table('job_postings',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('company_id', sa.Integer(), nullable=False),
+    sa.Column('company_id', sa.Uuid(), nullable=False),
     sa.Column('job_category_id', sa.Integer(), nullable=False),
     sa.Column('province_id', sa.Integer(), nullable=False),
     sa.Column('city_id', sa.Integer(), nullable=False),

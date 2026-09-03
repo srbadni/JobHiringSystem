@@ -11,6 +11,36 @@ class SqlAlchemyUsersRepository(UsersRepository):
     def __init__(self, session: AsyncSession):
         self.session = session
 
+    @staticmethod
+    def _to_domain(model: UserModel) -> User:
+        return User(
+            id=model.id,
+            email=model.email,
+            full_name=model.full_name,
+            phone_number=model.phone_number,
+            hashed_password=model.hashed_password,
+            user_type=model.user_type,
+            is_superuser=model.is_superuser,
+            email_verified=model.email_verified,
+            profile_image_url=model.profile_image_url,
+        )
+
+    async def list(self) -> list[User]:
+        result = await self.session.scalars(select(UserModel))
+        return [self._to_domain(model) for model in result.all()]
+
+    async def get_by_id(self, user_id: str) -> User:
+        result = await self.session.scalars(
+            select(UserModel).where(UserModel.id == user_id)
+        )
+        return self._to_domain(result.one())
+
+    async def get_by_email(self, email: str) -> User:
+        result = await self.session.scalars(
+            select(UserModel).where(UserModel.email == email)
+        )
+        return self._to_domain(result.one())
+
     async def exists_by_email(self, email: str) -> bool:
         stmt = select(
             exists().where(UserModel.email == email)
@@ -31,13 +61,6 @@ class SqlAlchemyUsersRepository(UsersRepository):
         )
 
         self.session.add(model)
+        await self.session.flush()
 
-        return User(
-            id=model.id,
-            email=model.email,
-            full_name=model.full_name,
-            phone_number=model.phone_number,
-            hashed_password=model.hashed_password,
-            user_type=model.user_type,
-            profile_image_url=model.profile_image_url
-        )
+        return self._to_domain(model)
