@@ -101,16 +101,6 @@ class JobPosting(Base):
         nullable=False,
     )
 
-    status: Mapped[JobPostingStatus] = mapped_column(
-        Enum(
-            JobPostingStatus,
-            values_callable=lambda enum: [item.value for item in enum],
-        ),
-        default=JobPostingStatus.NEEDS_REVIEW,
-        server_default=JobPostingStatus.NEEDS_REVIEW.value,
-        init=False
-    )
-
     work_experience: Mapped[RelevantWorkExperience] = mapped_column(
         Enum(
             RelevantWorkExperience,
@@ -147,6 +137,15 @@ class JobPosting(Base):
         Boolean,
         default=True,
         nullable=False,
+    )
+
+    status: Mapped[JobPostingStatus] = mapped_column(
+        Enum(
+            JobPostingStatus,
+            values_callable=lambda enum: [item.value for item in enum],
+        ),
+        default=JobPostingStatus.NEEDS_REVIEW,
+        server_default=JobPostingStatus.NEEDS_REVIEW.value,
     )
 
     company: Mapped["Company"] = relationship(

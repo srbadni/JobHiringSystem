@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+from ...job_posting.ports.job_posting_respository import JobPostingRepository
+
 from ...companies.ports.repositories.company_repository import CompanyRepository
 from ...company_membership.ports.company_membership_repository import CompanyMembershipRepository
 
@@ -12,6 +14,7 @@ class UnitOfWork(ABC):
     users: UsersRepository
     companies: CompanyRepository
     company_memberships: CompanyMembershipRepository
+    job_postings: JobPostingRepository
 
     async def __aenter__(self):
         return self
