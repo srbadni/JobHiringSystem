@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
 from application.common.ports.unit_of_work import UnitOfWork
 from infrastructure.persistence.sqlalchemy.repositories.sqlalchemy_company_repository import SQLAlchemyCompanyRepository
+from src.infrastructure.persistence.sqlalchemy.repositories.sqlalchemy_company_membership_repository import SqlAlchemyCompanyMembershipRepository
 from .repositories.sqlalchemy_user_repository import (
     SqlAlchemyUsersRepository,
 )
@@ -19,6 +20,7 @@ class SqlAlchemyUnitOfWork(UnitOfWork):
         self.session = self.session_factory()
         self.users = SqlAlchemyUsersRepository(self.session)
         self.companies = SQLAlchemyCompanyRepository(self.session)
+        self.company_memberships = SqlAlchemyCompanyMembershipRepository(self.session)
 
         return self
 

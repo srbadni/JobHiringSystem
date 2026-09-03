@@ -48,6 +48,7 @@ class SQLAlchemyCompanyRepository(CompanyRepository):
     async def add(self, company: DomainCompany) -> DomainCompany:
         mapped_company = self._to_orm_model(company=company)
         self.session.add(mapped_company)
+        await self.session.flush()
         return self._to_domain(company_orm_model=mapped_company)
 
 

@@ -1,6 +1,7 @@
 from domain.company.models import Company
 from domain.user.models import User
 from domain.user.enums import UserType
+from domain.company_membership.models import CompanyMembership
 
 from ..command.create_employer_and_company import CreateEmployerAndCompany
 from ...common.ports.password_hasher import PasswordHasher
@@ -36,6 +37,11 @@ class CreateEmployerAndCompanyHandler:
                 website=command.company.website,
             )
             created_employer = await self.uow.users.add(user_domain)
-            await self.uow.companies.add(company_domain)
+            created_company = await self.uow.companies.add(company_domain)
+            await self.uow.company_memberships.add(CompanyMembership(
+                user_id=created_employer.id,
+                company_id=created_company.id,
+                is_admin=True,
+            ))
             await self.uow.commit()
             return created_employer
