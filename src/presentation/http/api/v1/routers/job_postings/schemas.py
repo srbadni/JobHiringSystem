@@ -42,3 +42,7 @@ class JobPostingRead(BaseModel):
     minimum_education: MinimumEducationLevel
     gender: Gender
     military_status: MilitaryServiceStatus
+
+
+class JobPostingUpdate(JobPostingCreate):
+    pass

@@ -5,6 +5,10 @@ from bootstrap.employer_registration_providers import (
 )
 from bootstrap.job_postings_providers import (
     provide_create_job_posting_handler,
+    provide_delete_job_posting_handler,
+    provide_get_job_posting_by_id_handler,
+    provide_list_job_postings_handler,
+    provide_update_job_posting_handler,
 )
 from bootstrap.users_providers import (
     provide_create_user_handler,
@@ -35,6 +39,10 @@ def create_app() -> FastAPI:
 
     job_postings_router = create_job_postings_router(
         provide_create_job_posting_handler=provide_create_job_posting_handler,
+        provide_list_job_postings_handler=provide_list_job_postings_handler,
+        provide_get_job_posting_by_id_handler=provide_get_job_posting_by_id_handler,
+        provide_update_job_posting_handler=provide_update_job_posting_handler,
+        provide_delete_job_posting_handler=provide_delete_job_posting_handler,
     )
 
     app.include_router(
