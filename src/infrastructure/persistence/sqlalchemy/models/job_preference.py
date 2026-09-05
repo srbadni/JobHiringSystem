@@ -1,6 +1,7 @@
+from uuid import UUID, uuid4
 from typing import TYPE_CHECKING
 
-from sqlalchemy import ForeignKey, Integer, UniqueConstraint, Table, Column, Enum as SQLEnum
+from sqlalchemy import ForeignKey, Integer, UniqueConstraint, Table, Column, Enum as SQLEnum, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from domain.job_preference.enums import PreferredEmploymentType, PreferredSeniorityLevel, PreferredJobBenefit
@@ -19,13 +20,13 @@ job_preference_job_categories = Table(
     Base.metadata,
     Column(
         "job_preference_id",
-        Integer,
+        Uuid,
         ForeignKey("job_preferences.id", ondelete="CASCADE"),
         primary_key=True,
     ),
     Column(
         "job_category_id",
-        Integer,
+        Uuid,
         ForeignKey("job_categories.id", ondelete="CASCADE"),
         primary_key=True,
     ),
@@ -37,13 +38,13 @@ job_preference_provinces = Table(
     Base.metadata,
     Column(
         "job_preference_id",
-        Integer,
+        Uuid,
         ForeignKey("job_preferences.id", ondelete="CASCADE"),
         primary_key=True,
     ),
     Column(
         "province_id",
-        Integer,
+        Uuid,
         ForeignKey("provinces.id", ondelete="CASCADE"),
         primary_key=True,
     ),
@@ -53,8 +54,8 @@ job_preference_provinces = Table(
 class JobPreferenceEmploymentType(Base):
     __tablename__ = "job_preference_employment_types"
 
-    job_preference_id: Mapped[int] = mapped_column(
-        Integer,
+    job_preference_id: Mapped[UUID] = mapped_column(
+        Uuid,
         ForeignKey("job_preferences.id", ondelete="CASCADE"),
         primary_key=True,
     )
@@ -78,8 +79,8 @@ class JobPreferenceEmploymentType(Base):
 class JobPreferenceSeniorityLevel(Base):
     __tablename__ = "job_preference_seniority_levels"
 
-    job_preference_id: Mapped[int] = mapped_column(
-        Integer,
+    job_preference_id: Mapped[UUID] = mapped_column(
+        Uuid,
         ForeignKey("job_preferences.id", ondelete="CASCADE"),
         primary_key=True,
     )
@@ -103,8 +104,8 @@ class JobPreferenceSeniorityLevel(Base):
 class JobPreferenceBenefit(Base):
     __tablename__ = "job_preference_benefits"
 
-    job_preference_id: Mapped[int] = mapped_column(
-        Integer,
+    job_preference_id: Mapped[UUID] = mapped_column(
+        Uuid,
         ForeignKey("job_preferences.id", ondelete="CASCADE"),
         primary_key=True,
     )
@@ -134,20 +135,21 @@ class JobPreference(Base):
         ),
     )
 
-    id: Mapped[int] = mapped_column(
-        Integer,
+    id: Mapped[UUID] = mapped_column(
+        Uuid,
         primary_key=True,
         init=False,
+        default_factory=uuid4,
     )
 
-    profile_id: Mapped[int] = mapped_column(
-        Integer,
+    profile_id: Mapped[UUID] = mapped_column(
+        Uuid,
         ForeignKey("applicant_profiles.id", ondelete="CASCADE"),
         unique=True,
     )
 
-    minimum_salary_range_id: Mapped[int | None] = mapped_column(
-        Integer,
+    minimum_salary_range_id: Mapped[UUID | None] = mapped_column(
+        Uuid,
         ForeignKey("salary_ranges.id", ondelete="SET NULL"),
         nullable=True,
     )

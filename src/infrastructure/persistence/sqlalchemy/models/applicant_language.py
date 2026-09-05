@@ -1,6 +1,7 @@
+from uuid import UUID, uuid4
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Integer, ForeignKey, String, Enum
+from sqlalchemy import ForeignKey, String, Enum, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from domain.applicant_language.enums import LanguageLevel
@@ -13,10 +14,10 @@ if TYPE_CHECKING:
 class LanguageSkill(Base):
     __tablename__ = "language_skills"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, init=False)
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, init=False, default_factory=uuid4)
 
-    profile_id: Mapped[int] = mapped_column(
-        Integer,
+    profile_id: Mapped[UUID] = mapped_column(
+        Uuid,
         ForeignKey("applicant_profiles.id", ondelete="CASCADE",)
     )
 

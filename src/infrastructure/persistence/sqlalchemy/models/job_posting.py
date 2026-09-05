@@ -5,7 +5,6 @@ from sqlalchemy import (
     Boolean,
     Enum,
     ForeignKey,
-    Integer,
     String,
     Text, Uuid,
 )
@@ -42,17 +41,17 @@ class JobPosting(Base):
         nullable=False,
     )
 
-    job_category_id: Mapped[int] = mapped_column(
+    job_category_id: Mapped[UUID] = mapped_column(
         ForeignKey("job_categories.id"),
         nullable=False,
     )
 
-    province_id: Mapped[int] = mapped_column(
+    province_id: Mapped[UUID] = mapped_column(
         ForeignKey("provinces.id"),
         nullable=False,
     )
 
-    city_id: Mapped[int] = mapped_column(
+    city_id: Mapped[UUID] = mapped_column(
         ForeignKey("cities.id"),
         nullable=False,
     )
@@ -88,8 +87,8 @@ class JobPosting(Base):
         nullable=False,
     )
 
-    salary_range_id: Mapped[int] = mapped_column(
-        Integer,
+    salary_range_id: Mapped[UUID] = mapped_column(
+        Uuid,
         ForeignKey("salary_ranges.id"),
         nullable=False
     )

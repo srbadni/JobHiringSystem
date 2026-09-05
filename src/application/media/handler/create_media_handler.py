@@ -34,9 +34,6 @@ class CreateMediaHandler:
                     checksum_sha256=stored_file.checksum_sha256,
                 )
                 created_media = await self.uow.media.add(media_info)
-                if created_media.id is None:
-                    raise RuntimeError("Media repository did not assign an id.")
-
                 await self.uow.attached_resumes.add(
                     AttachedResume(
                         media_id=created_media.id,

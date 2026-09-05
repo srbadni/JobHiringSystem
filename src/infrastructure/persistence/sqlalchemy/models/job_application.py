@@ -1,9 +1,10 @@
 from typing import TYPE_CHECKING
-from uuid import UUID
+from uuid import UUID, uuid4
 
-from sqlalchemy import Integer, ForeignKey, String, Uuid
+from sqlalchemy import ForeignKey, Uuid, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from domain.job_application.enums import ApplicationStatus
 from infrastructure.persistence.sqlalchemy.base import Base
 
 if TYPE_CHECKING:
@@ -15,9 +16,9 @@ if TYPE_CHECKING:
 class JobApplication(Base):
     __tablename__ = "job_applications"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, init=False)
-    folder_id: Mapped[int | None] = mapped_column(
-        Integer, ForeignKey("job_applications_folder.id"), nullable=True
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, init=False, default_factory=uuid4)
+    folder_id: Mapped[UUID | None] = mapped_column(
+        Uuid, ForeignKey("job_applications_folder.id"), nullable=True
     )
     applicant_id: Mapped[UUID] = mapped_column(
         Uuid,
@@ -30,7 +31,10 @@ class JobApplication(Base):
     job_posting_id: Mapped[UUID] = mapped_column(
         Uuid, ForeignKey("job_postings.id"), nullable=False
     )
-    status: Mapped[str] = mapped_column(String(50), nullable=False)
+    status: Mapped[ApplicationStatus] = mapped_column(
+        Enum(ApplicationStatus, name="application_status"),
+        nullable=False,
+    )
 
     applicant: Mapped["User"] = relationship(
         "User", back_populates="job_applications", init=False

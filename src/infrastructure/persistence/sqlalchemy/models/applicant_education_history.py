@@ -1,6 +1,7 @@
+from uuid import UUID, uuid4
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Boolean, Enum, ForeignKey, Integer, String, Text, CheckConstraint
+from sqlalchemy import Boolean, Enum, ForeignKey, Integer, String, Text, CheckConstraint, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from domain.applicant_education_history.enums import EducationLevel
@@ -20,10 +21,10 @@ class Education(Base):
         ),
     )
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, init=False)
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, init=False, default_factory=uuid4)
 
-    profile_id: Mapped[int] = mapped_column(
-        Integer,
+    profile_id: Mapped[UUID] = mapped_column(
+        Uuid,
         ForeignKey("applicant_profiles.id", ondelete="CASCADE",)
     )
 

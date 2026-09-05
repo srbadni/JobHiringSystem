@@ -1,3 +1,4 @@
+from uuid import UUID
 from typing import Annotated, Callable
 
 from fastapi import APIRouter, Depends, Query
@@ -17,11 +18,11 @@ def create_jobs_result_router(
     async def get_jobs_result( # pyright: ignore[reportUnusedFunction]
             query_handler: Annotated[GetJobsQueryHandler, Depends(provide_jobs_result_handler)],
             keywords: str | None = None,
-            province_ids: list[int] | None = Query(default=None),
-            job_category_ids: list[int] | None = Query(default=None),
+            province_ids: list[UUID] | None = Query(default=None),
+            job_category_ids: list[UUID] | None = Query(default=None),
             work_modes: list[WorkMode] | None = Query(default=None),
             work_experiences: list[RelevantWorkExperience] | None = Query(default=None),
-            salary_range_ids: list[int] | None = Query(default=None),
+            salary_range_ids: list[UUID] | None = Query(default=None),
     ):
         queries = GetJobsQuery(
             keywords=keywords,

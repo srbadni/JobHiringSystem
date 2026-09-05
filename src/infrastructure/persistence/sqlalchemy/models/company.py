@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from uuid import UUID
 
-from sqlalchemy import Integer, String, Text, ForeignKey, Enum, Uuid
+from sqlalchemy import String, Text, ForeignKey, Enum, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from domain.company.enums import EmployeeCount
@@ -35,20 +35,20 @@ class Company(Base):
         nullable=False,
     )
 
-    province_id: Mapped[int] = mapped_column(
-        Integer,
+    province_id: Mapped[UUID] = mapped_column(
+        Uuid,
         ForeignKey("provinces.id"),
         nullable=False,
     )
 
-    city_id: Mapped[int] = mapped_column(
-        Integer,
+    city_id: Mapped[UUID] = mapped_column(
+        Uuid,
         ForeignKey("cities.id"),
         nullable=False,
     )
 
-    activity_id: Mapped[int] = mapped_column(
-        Integer,
+    activity_id: Mapped[UUID] = mapped_column(
+        Uuid,
         ForeignKey("company_activities.id"),
         nullable=False,
     )

@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from uuid import UUID
+from dataclasses import dataclass, field
+from uuid import UUID, uuid4
 
 from ..applicant_profile.enum import Gender, MartialStatus
 from ..attached_resume.models import AttachedResume
@@ -17,4 +17,4 @@ class ApplicantProfile:
     address: str | None = None
     about: str | None = None
     attached_resume: AttachedResume | None = None
-    id: int | None = None
+    id: UUID = field(default_factory=uuid4)
