@@ -1,7 +1,7 @@
 from uuid import UUID
 from typing import Annotated, Callable
 
-from fastapi import APIRouter, Depends, File, Form, UploadFile, status
+from fastapi import APIRouter, Depends, File, UploadFile, status
 
 from application.media.command.create_media_command import CreateMediaCommand
 from application.media.handler.create_media_handler import CreateMediaHandler
@@ -16,10 +16,10 @@ def create_resume_upload_router(
 ) -> APIRouter:
     router = APIRouter(tags=["Resumes"])
 
-    @router.post("", status_code=status.HTTP_201_CREATED, response_model=ResumeUploadRead)
+    @router.post("/{applicant_id}", status_code=status.HTTP_201_CREATED, response_model=ResumeUploadRead)
     async def upload_resume(  # pyright: ignore[reportUnusedFunction]
         file: Annotated[UploadFile, File(description="Resume file")],
-        applicant_profile_id: UUID,
+        applicant_id: UUID,
         command_handler: Annotated[CreateMediaHandler, Depends(provide_create_media_handler)],
     ) -> ResumeUploadRead:
         media = await command_handler.handle(
@@ -27,7 +27,7 @@ def create_resume_upload_router(
                 file=file,
                 filename=file.filename or "",
                 content_type=file.content_type,
-                applicant_profile_id=applicant_profile_id,
+                applicant_id=applicant_id,
             )
         )
         return ResumeUploadRead(**media.__dict__)

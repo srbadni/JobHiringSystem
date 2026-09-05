@@ -12,4 +12,4 @@ class CreateMediaCommand:
     file: AsyncFileReader
     filename: str
     content_type: str | None
-    applicant_profile_id: UUID
+    applicant_id: UUID

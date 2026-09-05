@@ -34,10 +34,11 @@ class CreateMediaHandler:
                     checksum_sha256=stored_file.checksum_sha256,
                 )
                 created_media = await self.uow.media.add(media_info)
+                applicant_profile_id = await self.uow.applicant_profiles.get_id_by_applicant_id(command.applicant_id)
                 await self.uow.attached_resumes.add(
                     AttachedResume(
                         media_id=created_media.id,
-                        applicant_profile_id=command.applicant_profile_id,
+                        applicant_profile_id=applicant_profile_id,
                     )
                 )
                 await self.uow.commit()
