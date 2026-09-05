@@ -11,7 +11,6 @@ if TYPE_CHECKING:
     from .applicant_profile import ApplicantProfile
     from .company_membership import CompanyMembership
     from .job_application import JobApplication
-    from .media import Media
 
 
 class User(Base):
@@ -80,11 +79,4 @@ class User(Base):
         init=False,
         passive_deletes=True,
         cascade="all, delete-orphan",
-    )
-
-    media_files: Mapped[list["Media"]] = relationship(
-        "Media",
-        back_populates="owner",
-        passive_deletes=True,
-        init=False,
     )

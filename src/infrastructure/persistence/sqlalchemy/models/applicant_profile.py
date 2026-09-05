@@ -14,48 +14,34 @@ if TYPE_CHECKING:
     from .applicant_skill import ApplicantSkill
     from .applicant_work_experience import WorkExperience
     from .job_preference import JobPreference
-    from .media import Media
     from .user import User
+    from .attached_resume import AttachedResume
 
 
 class ApplicantProfile(Base):
     __tablename__ = "applicant_profiles"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, init=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, init=False)
     applicant_id: Mapped[UUID] = mapped_column(
         Uuid,
         ForeignKey("users.id", ondelete="CASCADE",),
         nullable=False,
         unique=True,
     )
-    attached_resume_id: Mapped[int | None] = mapped_column(
-        Integer,
-        ForeignKey("media.id", ondelete="SET NULL"),
-        nullable=True,
-        unique=True,
-        init=False,
-    )
 
-    specialization: Mapped[str | None] = mapped_column(String(100), init=False)
-    birth_year: Mapped[int | None] = mapped_column(Integer, init=False)
-    gender: Mapped[Gender | None] = mapped_column(String(20), init=False)
-    military_status: Mapped[MilitaryServiceStatus | None] = mapped_column(String(50), init=False)
-    martial_status: Mapped[MartialStatus | None] = mapped_column(String(20), init=False)
-    province: Mapped[str | None] = mapped_column(String(50), init=False)
-    address: Mapped[str | None] = mapped_column(Text, init=False)
-    about: Mapped[str | None] = mapped_column(Text, init=False)
+    specialization: Mapped[str | None] = mapped_column(String(100))
+    birth_year: Mapped[int | None] = mapped_column(Integer)
+    gender: Mapped[Gender | None] = mapped_column(String(20))
+    military_status: Mapped[MilitaryServiceStatus | None] = mapped_column(String(50))
+    martial_status: Mapped[MartialStatus | None] = mapped_column(String(20))
+    province: Mapped[str | None] = mapped_column(String(50))
+    address: Mapped[str | None] = mapped_column(Text)
+    about: Mapped[str | None] = mapped_column(Text)
 
     applicant: Mapped["User"] = relationship(
         "User",
         back_populates="applicant_profile",
         init=False
-    )
-    attached_resume: Mapped["Media | None"] = relationship(
-        "Media",
-        back_populates="attached_resume_profile",
-        foreign_keys=[attached_resume_id],
-        uselist=False,
-        init=False,
     )
     skills: Mapped[list["ApplicantSkill"]] = relationship(
         "ApplicantSkill",
@@ -89,6 +75,15 @@ class ApplicantProfile(Base):
     job_preference: Mapped["JobPreference | None"] = relationship(
         "JobPreference",
         back_populates="applicant",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+        uselist=False,
+        init=False,
+    )
+
+    attached_resume: Mapped["AttachedResume | None"] = relationship(
+        "AttachedResume",
+        back_populates="applicant_profile",
         cascade="all, delete-orphan",
         passive_deletes=True,
         uselist=False,

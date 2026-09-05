@@ -16,6 +16,7 @@ from .job_preference import JobPreference
 from .media import Media
 from .province import Province
 from .salary_range import SalaryRange
+from .attached_resume import AttachedResume
 
 
 __all__ = [
@@ -37,4 +38,5 @@ __all__ = [
     "Media",
     "Province",
     "SalaryRange",
+    "AttachedResume",
 ]
