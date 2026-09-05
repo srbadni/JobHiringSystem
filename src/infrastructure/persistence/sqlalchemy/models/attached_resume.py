@@ -15,7 +15,7 @@ class AttachedResume(Base):
 
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
     media_id: Mapped[UUID] = mapped_column(Uuid, ForeignKey("media.id", ondelete="CASCADE"))
-    applicant_profile_id: Mapped[UUID] = mapped_column(Uuid, ForeignKey("applicant_profiles.id"))
+    applicant_profile_id: Mapped[UUID] = mapped_column(Uuid, ForeignKey("applicant_profiles.id"), unique=True)
 
     applicant_profile: Mapped["ApplicantProfile"] = relationship(
         "ApplicantProfile",
