@@ -15,6 +15,7 @@ class SQLAlchemyAttachedResumesRepository(AttachedResumesRepository):
             applicant_profile_id=attached_resume.applicant_profile_id,
         )
         self.session.add(model)
+        await self.session.flush()
         return AttachedResume(
             media_id=model.media_id,
             applicant_profile_id=model.applicant_profile_id,

@@ -19,6 +19,7 @@ class SQLAlchemyMediaRepository(MediaRepository):
             checksum_sha256=media.checksum_sha256,
         )
         self.session.add(model)
+        await self.session.flush()
         return MediaDTO(
             original_name=model.original_name,
             storage_key=model.storage_key,

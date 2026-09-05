@@ -1,43 +1,55 @@
-import hashlib
-import uuid
+from pathlib import Path
+from uuid import uuid4
 
 from domain.attached_resume.models import AttachedResume
-from ..dto import MediaDTO
+
 from ...common.ports.unit_of_work import UnitOfWork
-from ...media.command.create_media_command import CreateMediaCommand
+from ..command.create_media_command import CreateMediaCommand
+from ..dto import MediaDTO
+from ..ports.file_storage import FileStorage
 
 
 class CreateMediaHandler:
-
-    def __init__(self, uow: UnitOfWork):
+    def __init__(self, uow: UnitOfWork, file_storage: FileStorage):
         self.uow = uow
+        self.file_storage = file_storage
 
     async def handle(self, command: CreateMediaCommand) -> MediaDTO:
-        async with self.uow:
-            sha256 = hashlib.sha256()
-            size_bytes = 0
+        original_name = Path(command.filename).name
+        if not original_name:
+            raise ValueError("A file name is required.")
 
-            while chunk := await command.file.read(1024 * 1024):
-                size_bytes += len(chunk)
-                sha256.update(chunk)
+        # A generated opaque key avoids trusting user-controlled paths and keeps the
+        # database independent from the configured storage backend's root location.
+        suffix = Path(original_name).suffix.lower()
+        storage_key = f"resumes/{uuid4().hex}{suffix}"
+        stored_file = await self.file_storage.save(storage_key, command.file)
+        committed = False
 
-            checksum_sha256 = sha256.hexdigest()
+        try:
+            async with self.uow:
+                media_info = MediaDTO(
+                    original_name=original_name[:255],
+                    storage_key=storage_key,
+                    mime_type=(command.content_type or "application/octet-stream")[:127],
+                    size_bytes=stored_file.size_bytes,
+                    checksum_sha256=stored_file.checksum_sha256,
+                )
+                created_media = await self.uow.media.add(media_info)
+                if created_media.id is None:
+                    raise RuntimeError("Media repository did not assign an id.")
 
-            media_info = MediaDTO(
-                original_name=command.file.filename or "",
-                storage_key=f"uploads/{uuid.uuid4()}-{command.file.filename}",
-                mime_type=command.file.content_type or "",
-                size_bytes=size_bytes,
-                checksum_sha256=checksum_sha256,
-            )
-
-            created_media = await self.uow.media.add(media_info)
-            if not created_media.id:
-                raise Exception
-
-            await self.uow.attached_resumes.add(AttachedResume(
-                media_id=created_media.id,
-                applicant_profile_id=command.applicant_profile_id,
-            ))
-
-            return created_media
+                await self.uow.attached_resumes.add(
+                    AttachedResume(
+                        media_id=created_media.id,
+                        applicant_profile_id=command.applicant_profile_id,
+                    )
+                )
+                await self.uow.commit()
+                committed = True
+                return created_media
+        finally:
+            # A filesystem and SQL transaction cannot commit atomically. Compensate
+            # for any database failure so it does not leave an orphaned file behind.
+            if not committed:
+                await self.file_storage.delete(storage_key)
