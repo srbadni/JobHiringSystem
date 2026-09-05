@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Protocol
+from uuid import UUID
 
 
 class AsyncFileReader(Protocol):
@@ -11,4 +12,4 @@ class CreateMediaCommand:
     file: AsyncFileReader
     filename: str
     content_type: str | None
-    applicant_profile_id: int
+    applicant_profile_id: UUID

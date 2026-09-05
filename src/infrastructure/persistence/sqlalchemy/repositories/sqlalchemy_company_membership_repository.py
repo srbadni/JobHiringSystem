@@ -23,6 +23,7 @@ class SqlAlchemyCompanyMembershipRepository(CompanyMembershipRepository):
     async def add(self, company_membership: CompanyMembership) -> CompanyMembership:
 
         company_membership_orm_model = CompanyMembershipORMModel(
+            id=company_membership.id,
             user_id=company_membership.user_id,
             company_id=company_membership.company_id,
             is_admin=company_membership.is_admin,

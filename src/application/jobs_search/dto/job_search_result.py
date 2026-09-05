@@ -4,7 +4,7 @@ from uuid import UUID
 
 @dataclass(frozen=True)
 class JobSearchResult:
-    id: int
+    id: UUID
     company_id: UUID
     company_title: str
     company_english_title: str

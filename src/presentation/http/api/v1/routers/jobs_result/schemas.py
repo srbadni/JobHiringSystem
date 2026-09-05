@@ -1,10 +1,11 @@
+from uuid import UUID
 from pydantic import BaseModel
 
 from domain.job_posting.enum import Gender, MilitaryServiceStatus, MinimumEducationLevel, RelevantWorkExperience, \
     WorkMode, EmploymentType
 
 class JobSearchRead(BaseModel):
-    id: int
+    id: UUID
     job_title: str
     employment_type: EmploymentType
     work_mode: WorkMode

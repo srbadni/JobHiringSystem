@@ -13,6 +13,7 @@ class SQLAlchemyApplicantProfilesRepository(ApplicantProfilesRepository):
 
     async def add(self, applicant_profile: ApplicantProfile) -> ApplicantProfile:
         applicant_profile_orm_model = ApplicantProfileORMModel(
+            id=applicant_profile.id,
             applicant_id=applicant_profile.applicant_id,
             specialization=applicant_profile.specialization,
             birth_year=applicant_profile.birth_year,

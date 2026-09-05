@@ -1,6 +1,7 @@
+from uuid import UUID, uuid4
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Integer, String
+from sqlalchemy import Integer, String, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from infrastructure.persistence.sqlalchemy.base import Base
@@ -13,7 +14,7 @@ if TYPE_CHECKING:
 class SalaryRange(Base):
     __tablename__ = "salary_ranges"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, init=False)
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, init=False, default_factory=uuid4)
     title: Mapped[str] = mapped_column(String, nullable=False)
     min_salary: Mapped[int | None] = mapped_column(Integer, default=None)
     max_salary: Mapped[int | None] = mapped_column(Integer, default=None)

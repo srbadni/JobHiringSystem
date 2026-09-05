@@ -1,6 +1,8 @@
 """Database metadata for privately stored files."""
 
-from sqlalchemy import BigInteger, CheckConstraint, Integer, String
+from uuid import UUID
+
+from sqlalchemy import BigInteger, CheckConstraint, String, Uuid
 from sqlalchemy.orm import Mapped, mapped_column
 
 from infrastructure.persistence.sqlalchemy.base import Base
@@ -14,7 +16,7 @@ class Media(Base):
         CheckConstraint("size_bytes > 0", name="ck_media_size_bytes_positive"),
     )
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, init=False)
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
     original_name: Mapped[str] = mapped_column(String(255), nullable=False)
     storage_key: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
     mime_type: Mapped[str] = mapped_column(String(127), nullable=False)

@@ -1,4 +1,5 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from uuid import UUID, uuid4
 
 
 @dataclass
@@ -8,4 +9,4 @@ class MediaDTO:
     mime_type: str
     size_bytes: int
     checksum_sha256: str
-    id: int | None = None
+    id: UUID = field(default_factory=uuid4)

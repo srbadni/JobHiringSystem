@@ -12,6 +12,7 @@ class SQLAlchemyMediaRepository(MediaRepository):
 
     async def add(self, media: MediaDTO) -> MediaDTO:
         model = MediaORMModel(
+            id=media.id,
             original_name=media.original_name,
             storage_key=media.storage_key,
             mime_type=media.mime_type,

@@ -9,9 +9,9 @@ class Company:
     name: str
     persian_name: str
     phone_number: str
-    province_id: int
-    city_id: int
-    activity_id: int
+    province_id: UUID
+    city_id: UUID
+    activity_id: UUID
     personnel_count: EmployeeCount
     id: UUID = field(default_factory=uuid4)
     logo_path: str | None = None

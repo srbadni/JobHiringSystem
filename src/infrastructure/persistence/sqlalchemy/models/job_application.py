@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
-from uuid import UUID
+from uuid import UUID, uuid4
 
-from sqlalchemy import Integer, ForeignKey, String, Uuid
+from sqlalchemy import ForeignKey, String, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from infrastructure.persistence.sqlalchemy.base import Base
@@ -15,9 +15,9 @@ if TYPE_CHECKING:
 class JobApplication(Base):
     __tablename__ = "job_applications"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, init=False)
-    folder_id: Mapped[int | None] = mapped_column(
-        Integer, ForeignKey("job_applications_folder.id"), nullable=True
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, init=False, default_factory=uuid4)
+    folder_id: Mapped[UUID | None] = mapped_column(
+        Uuid, ForeignKey("job_applications_folder.id"), nullable=True
     )
     applicant_id: Mapped[UUID] = mapped_column(
         Uuid,

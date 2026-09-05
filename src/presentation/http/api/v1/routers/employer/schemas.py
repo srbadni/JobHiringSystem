@@ -1,3 +1,4 @@
+from uuid import UUID
 from typing import Annotated
 
 from pydantic import BaseModel, Field, field_validator
@@ -20,9 +21,9 @@ class EmployerRead(BaseModel):
 class CompanyCreate(BaseModel):
     name: Annotated[str, Field(min_length=2, max_length=120)]
     persian_name: Annotated[str, Field(min_length=2, max_length=120)]
-    province_id: Annotated[int, Field(gt=0)]
-    city_id: Annotated[int, Field(gt=0)]
-    activity_id: Annotated[int, Field(gt=0)]
+    province_id: Annotated[UUID, Field(gt=0)]
+    city_id: Annotated[UUID, Field(gt=0)]
+    activity_id: Annotated[UUID, Field(gt=0)]
     personnel_count: Annotated[EmployeeCount, Field()]
     logo_path: str | None = None
     phone_number: Annotated[

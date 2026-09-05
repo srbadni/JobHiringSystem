@@ -1,8 +1,9 @@
+from uuid import UUID
 from pydantic import BaseModel
 
 
 class ResumeUploadRead(BaseModel):
-    id: int
+    id: UUID
     original_name: str
     storage_key: str
     mime_type: str

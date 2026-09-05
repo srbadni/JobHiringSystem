@@ -11,6 +11,7 @@ class SQLAlchemyAttachedResumesRepository(AttachedResumesRepository):
 
     async def add(self, attached_resume: AttachedResume) -> AttachedResume:
         model = AttachedResumeORMModel(
+            id=attached_resume.id,
             media_id=attached_resume.media_id,
             applicant_profile_id=attached_resume.applicant_profile_id,
         )

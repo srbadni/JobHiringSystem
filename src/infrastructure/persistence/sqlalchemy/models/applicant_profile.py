@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 class ApplicantProfile(Base):
     __tablename__ = "applicant_profiles"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, init=False)
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
     applicant_id: Mapped[UUID] = mapped_column(
         Uuid,
         ForeignKey("users.id", ondelete="CASCADE",),

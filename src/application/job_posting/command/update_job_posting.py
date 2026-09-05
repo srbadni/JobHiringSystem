@@ -16,10 +16,10 @@ from domain.job_posting.enum import (
 class UpdateJobPostingCommand:
     job_posting_id: UUID
     company_id: UUID
-    job_category_id: int
-    province_id: int
-    city_id: int
-    salary_range_id: int
+    job_category_id: UUID
+    province_id: UUID
+    city_id: UUID
+    salary_range_id: UUID
     job_title: str
     job_description: str
     company_overview: str
