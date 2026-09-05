@@ -27,8 +27,8 @@ class JobApplication(Base):
         ),
         nullable=False,
     )
-    job_posting_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("job_postings.id"), nullable=False
+    job_posting_id: Mapped[UUID] = mapped_column(
+        Uuid, ForeignKey("job_postings.id"), nullable=False
     )
     status: Mapped[str] = mapped_column(String(50), nullable=False)
 

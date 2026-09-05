@@ -25,7 +25,7 @@ class JobPostingCreate(BaseModel):
     military_status: MilitaryServiceStatus
 
 class JobPostingRead(BaseModel):
-    id: int
+    id: UUID
     company_id: UUID
     job_category_id: int
     province_id: int

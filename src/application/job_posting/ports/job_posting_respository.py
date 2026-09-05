@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from uuid import UUID
 
 from domain.job_posting.models import JobPosting
 
@@ -10,7 +11,7 @@ class JobPostingRepository(ABC):
         pass
 
     @abstractmethod
-    async def get_by_id(self, job_posting_id: int) -> JobPosting:
+    async def get_by_id(self, job_posting_id: UUID) -> JobPosting:
         pass
 
     @abstractmethod
@@ -22,5 +23,5 @@ class JobPostingRepository(ABC):
         pass
 
     @abstractmethod
-    async def delete(self, job_posting_id: int) -> None:
+    async def delete(self, job_posting_id: UUID) -> None:
         pass

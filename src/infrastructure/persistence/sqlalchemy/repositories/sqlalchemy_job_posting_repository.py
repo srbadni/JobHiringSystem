@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -38,12 +40,13 @@ class SqlAlchemyJobPostingRepository(JobPostingRepository):
         result = await self.session.scalars(select(JobPostingORMModel))
         return [self._to_domain(model) for model in result.all()]
 
-    async def get_by_id(self, job_posting_id: int) -> JobPosting:
+    async def get_by_id(self, job_posting_id: UUID) -> JobPosting:
         model = await self.session.get_one(JobPostingORMModel, job_posting_id)
         return self._to_domain(model)
 
     async def add(self, job_posting: JobPosting) -> JobPosting:
         job_posting_orm_model = JobPostingORMModel(
+            id=job_posting.id,
             company_id=job_posting.company_id,
             job_category_id=job_posting.job_category_id,
             province_id=job_posting.province_id,
@@ -69,9 +72,6 @@ class SqlAlchemyJobPostingRepository(JobPostingRepository):
         return self._to_domain(job_posting_orm_model)
 
     async def update(self, job_posting: JobPosting) -> JobPosting:
-        if job_posting.id is None:
-            raise ValueError("A job posting id is required for an update")
-
         model = await self.session.get_one(JobPostingORMModel, job_posting.id)
         model.company_id = job_posting.company_id
         model.job_category_id = job_posting.job_category_id
@@ -93,7 +93,7 @@ class SqlAlchemyJobPostingRepository(JobPostingRepository):
         await self.session.flush()
         return self._to_domain(model)
 
-    async def delete(self, job_posting_id: int) -> None:
+    async def delete(self, job_posting_id: UUID) -> None:
         model = await self.session.get_one(JobPostingORMModel, job_posting_id)
         await self.session.delete(model)
         await self.session.flush()

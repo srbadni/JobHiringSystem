@@ -14,7 +14,7 @@ from domain.job_posting.enum import (
 
 @dataclass(frozen=True, slots=True)
 class UpdateJobPostingCommand:
-    job_posting_id: int
+    job_posting_id: UUID
     company_id: UUID
     job_category_id: int
     province_id: int

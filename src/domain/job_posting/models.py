@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from uuid import UUID
+from dataclasses import dataclass, field
+from uuid import UUID, uuid4
 
 from .enum import EmploymentType, WorkMode, JobPostingStatus, RelevantWorkExperience, Gender, MinimumEducationLevel, \
     MilitaryServiceStatus
@@ -24,4 +24,4 @@ class JobPosting:
     minimum_education: MinimumEducationLevel
     gender: Gender
     military_status: MilitaryServiceStatus
-    id: int | None = None
+    id: UUID = field(default_factory=uuid4)

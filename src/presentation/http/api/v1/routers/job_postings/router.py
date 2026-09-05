@@ -1,4 +1,5 @@
 from typing import Annotated, Callable
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, status
 
@@ -64,14 +65,14 @@ def create_job_postings_router(
 
     @router.get("/{job_posting_id}", response_model=JobPostingRead)
     async def get_job_posting(  # pyright: ignore[reportUnusedFunction]
-            job_posting_id: int,
+            job_posting_id: UUID,
             query_handler: Annotated[GetJobPostingByIdQueryHandler, Depends(provide_get_job_posting_by_id_handler)],
     ):
         return await query_handler.handle(GetJobPostingByIdQuery(job_posting_id=job_posting_id))
 
     @router.put("/{job_posting_id}", response_model=JobPostingRead)
     async def update_job_posting(  # pyright: ignore[reportUnusedFunction]
-            job_posting_id: int,
+            job_posting_id: UUID,
             job_posting_data: JobPostingUpdate,
             command_handler: Annotated[UpdateJobPostingHandler, Depends(provide_update_job_posting_handler)],
     ):
@@ -98,7 +99,7 @@ def create_job_postings_router(
 
     @router.delete("/{job_posting_id}", status_code=status.HTTP_204_NO_CONTENT)
     async def delete_job_posting(  # pyright: ignore[reportUnusedFunction]
-            job_posting_id: int,
+            job_posting_id: UUID,
             command_handler: Annotated[DeleteJobPostingHandler, Depends(provide_delete_job_posting_handler)],
     ) -> None:
         await command_handler.handle(DeleteJobPostingCommand(job_posting_id=job_posting_id))

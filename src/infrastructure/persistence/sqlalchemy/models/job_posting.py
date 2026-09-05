@@ -34,7 +34,7 @@ if TYPE_CHECKING:
 class JobPosting(Base):
     __tablename__ = "job_postings"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, init=False, autoincrement=True)
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
 
     company_id: Mapped[UUID] = mapped_column(
         Uuid,

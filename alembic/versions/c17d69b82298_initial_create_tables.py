@@ -1,8 +1,8 @@
 """initial create tables
 
-Revision ID: 2bbfb7b86d85
+Revision ID: c17d69b82298
 Revises: 
-Create Date: 2026-09-02 17:50:06.421278
+Create Date: 2026-09-05 10:54:34.676957
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '2bbfb7b86d85'
+revision: str = 'c17d69b82298'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -157,7 +157,7 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('job_postings',
-    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('company_id', sa.Uuid(), nullable=False),
     sa.Column('job_category_id', sa.Integer(), nullable=False),
     sa.Column('province_id', sa.Integer(), nullable=False),
@@ -169,12 +169,12 @@ def upgrade() -> None:
     sa.Column('work_mode', sa.Enum('onsite', 'remote', 'hybrid', name='workmode'), nullable=False),
     sa.Column('salary_range_id', sa.Integer(), nullable=False),
     sa.Column('is_latin_text', sa.Boolean(), nullable=False),
-    sa.Column('status', sa.Enum('active', 'needs_review', 'draft', 'closed', 'archived', name='jobpostingstatus'), server_default='needs_review', nullable=False),
     sa.Column('work_experience', sa.Enum('not_important', 'less_than_3_years', 'three_to_six_years', 'more_than_6_years', name='relevantworkexperience'), nullable=False),
     sa.Column('minimum_education', sa.Enum('not_important', 'diploma', 'associate', 'bachelor', 'master', 'doctorate', name='minimumeducationlevel'), nullable=False),
     sa.Column('gender', sa.Enum('not_important', 'male', 'female', name='gender'), nullable=False),
     sa.Column('military_status', sa.Enum('not_important', 'completed', 'educational_exemption', 'permanent_exemption', name='militaryservicestatus'), nullable=False),
     sa.Column('post_notifications', sa.Boolean(), nullable=False),
+    sa.Column('status', sa.Enum('active', 'needs_review', 'draft', 'closed', 'archived', name='jobpostingstatus'), server_default='needs_review', nullable=False),
     sa.ForeignKeyConstraint(['city_id'], ['cities.id'], ),
     sa.ForeignKeyConstraint(['company_id'], ['companies.id'], ),
     sa.ForeignKeyConstraint(['job_category_id'], ['job_categories.id'], ),
@@ -219,7 +219,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('folder_id', sa.Integer(), nullable=True),
     sa.Column('applicant_id', sa.Uuid(), nullable=False),
-    sa.Column('job_posting_id', sa.Integer(), nullable=False),
+    sa.Column('job_posting_id', sa.Uuid(), nullable=False),
     sa.Column('status', sa.String(length=50), nullable=False),
     sa.ForeignKeyConstraint(['applicant_id'], ['users.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['folder_id'], ['job_applications_folder.id'], ),
