@@ -1,4 +1,6 @@
 from fastapi import HTTPException
+
+from domain.applicant_profile.models import ApplicantProfile
 from domain.user.models import User
 from domain.user.enums import UserType
 from ..command.create_user import CreateUserCommand
@@ -33,6 +35,10 @@ class CreateUserCommandHandler:
             )
 
             result = await self.uow.users.add(user)
+            await self.uow.applicant_profiles.add(ApplicantProfile(
+                applicant_id=result.id,
+            ))
+
             await self.uow.commit()
 
             return result
