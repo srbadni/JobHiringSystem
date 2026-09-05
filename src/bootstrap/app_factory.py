@@ -20,6 +20,11 @@ from bootstrap.jobs_result_providers import (
     provide_jobs_result_handler
 )
 from bootstrap.media_providers import provide_create_media_handler
+from bootstrap.applicant_profile_providers import (
+    provide_educations_handler, provide_job_preference_handler,
+    provide_language_skills_handler, provide_skills_handler,
+    provide_work_experiences_handler,
+)
 from presentation.http.api.v1.routers.users.router import (
     create_users_router,
 )
@@ -27,6 +32,7 @@ from presentation.http.api.v1.routers.employer.router import create_employer_rou
 from presentation.http.api.v1.routers.job_postings.router import create_job_postings_router
 from presentation.http.api.v1.routers.jobs_result.router import create_jobs_result_router
 from presentation.http.api.v1.routers.resume_upload.router import create_resume_upload_router
+from presentation.http.api.v1.routers.applicant_profile.router import create_applicant_profile_router
 
 
 def create_app() -> FastAPI:
@@ -59,6 +65,14 @@ def create_app() -> FastAPI:
         provide_create_media_handler=provide_create_media_handler,
     )
 
+    applicant_profile_router = create_applicant_profile_router(
+        provide_skills_handler=provide_skills_handler,
+        provide_work_experiences_handler=provide_work_experiences_handler,
+        provide_educations_handler=provide_educations_handler,
+        provide_language_skills_handler=provide_language_skills_handler,
+        provide_job_preference_handler=provide_job_preference_handler,
+    )
+
     app.include_router(
         users_router,
         prefix="/api/v1/users",
@@ -82,6 +96,11 @@ def create_app() -> FastAPI:
     app.include_router(
         resume_upload_router,
         prefix="/api/v1/resume-upload",
+    )
+
+    app.include_router(
+        applicant_profile_router,
+        prefix="/api/v1/applicant-profiles",
     )
 
     return app
