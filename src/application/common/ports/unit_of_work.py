@@ -3,6 +3,9 @@ from abc import ABC, abstractmethod
 from application.jobs_search.ports.jobs_search_repository import JobsSearchRepository
 from application.applicant_profile.ports.applicant_profiles_repository import ApplicantProfilesRepository
 from application.applicant_profile.ports.attached_resumes_repository import AttachedResumesRepository
+from application.company_activities.ports.company_activity_repository import CompanyActivityRepository
+from application.job_categories.ports.job_category_repository import JobCategoryRepository
+from application.salary_ranges.ports.salary_range_repository import SalaryRangeRepository
 
 
 from ...companies.ports.repositories.company_repository import CompanyRepository
@@ -24,6 +27,9 @@ class UnitOfWork(ABC):
     media: MediaRepository
     attached_resumes: AttachedResumesRepository
     applicant_profiles: ApplicantProfilesRepository
+    company_activities: CompanyActivityRepository
+    job_categories: JobCategoryRepository
+    salary_ranges: SalaryRangeRepository
 
     async def __aenter__(self):
         return self
