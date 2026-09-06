@@ -3,21 +3,26 @@ from typing import Annotated, Callable
 
 from fastapi import APIRouter, Depends, Query
 
+from application.jobs_search.dto.company_details import CompanyDetails
 from application.jobs_search.handlers.get_company_jobs_handler import GetCompanyJobsHandler
+from application.jobs_search.handlers.get_company_details_handler import GetCompanyDetailsHandler
 from application.jobs_search.handlers.get_job_details_handler import GetJobDetailsHandler
 from application.jobs_search.handlers.get_jobs_query_handler import GetJobsQueryHandler
 from application.jobs_search.query.get_company_jobs import GetCompanyJobs
+from application.jobs_search.query.get_company_details import GetCompanyDetailsQuery
 from application.jobs_search.query.get_job_details_query import GetJobDetailsQuery
 from application.jobs_search.query.get_jobs import GetJobsQuery
 from domain.job_posting.enum import RelevantWorkExperience, WorkMode
 
 JobsResultHandlerProvider = Callable[[], GetJobsQueryHandler]
 CompanyJobsResultHandlerProvider = Callable[[], GetCompanyJobsHandler]
+CompanyDetailsHandlerProvider = Callable[[], GetCompanyDetailsHandler]
 GetJobDetailsHandlerProvider = Callable[[], GetJobDetailsHandler]
 
 def create_jobs_result_router(
     provide_jobs_result_handler: JobsResultHandlerProvider,
     provide_company_jobs_result_handler: CompanyJobsResultHandlerProvider,
+    provide_company_details_handler: CompanyDetailsHandlerProvider,
     provide_job_details_handler: GetJobDetailsHandlerProvider,
 ) -> APIRouter:
     router = APIRouter(tags=["Jobs Result"])
@@ -42,7 +47,15 @@ def create_jobs_result_router(
         )
         return await query_handler.handle(query=queries)
 
-    @router.get("/{company_name}/jobs-list")
+    @router.get("/companies/{company_name}")
+    async def get_company_details(  # pyright: ignore[reportUnusedFunction]
+            query_handler: Annotated[GetCompanyDetailsHandler, Depends(provide_company_details_handler)],
+            company_name: str,
+    ) -> CompanyDetails:
+        query = GetCompanyDetailsQuery(company_en_name=company_name)
+        return await query_handler.handle(query=query)
+
+    @router.get("/companies/{company_name}/jobs")
     async def get_company_jobs(  # pyright: ignore[reportUnusedFunction]
             query_handler: Annotated[GetCompanyJobsHandler, Depends(provide_company_jobs_result_handler)],
             company_name: str,
@@ -52,7 +65,7 @@ def create_jobs_result_router(
         )
         return await query_handler.handle(query=queries)
 
-    @router.get("/{company_name}/{job_id}")
+    @router.get("/companies/{company_name}/jobs/{job_id}")
     async def get_job_details(  # pyright: ignore[reportUnusedFunction]
             query_handler: Annotated[GetJobDetailsHandler, Depends(provide_job_details_handler)],
             company_name: str,
