@@ -4,17 +4,21 @@ from typing import Annotated, Callable
 from fastapi import APIRouter, Depends, Query
 
 from application.jobs_search.handlers.get_company_jobs_handler import GetCompanyJobsHandler
+from application.jobs_search.handlers.get_job_details_handler import GetJobDetailsHandler
 from application.jobs_search.handlers.get_jobs_query_handler import GetJobsQueryHandler
 from application.jobs_search.query.get_company_jobs import GetCompanyJobs
+from application.jobs_search.query.get_job_details_query import GetJobDetailsQuery
 from application.jobs_search.query.get_jobs import GetJobsQuery
 from domain.job_posting.enum import RelevantWorkExperience, WorkMode
 
 JobsResultHandlerProvider = Callable[[], GetJobsQueryHandler]
 CompanyJobsResultHandlerProvider = Callable[[], GetCompanyJobsHandler]
+GetJobDetailsHandlerProvider = Callable[[], GetJobDetailsHandler]
 
 def create_jobs_result_router(
     provide_jobs_result_handler: JobsResultHandlerProvider,
     provide_company_jobs_result_handler: CompanyJobsResultHandlerProvider,
+    provide_job_details_handler: GetJobDetailsHandlerProvider,
 ) -> APIRouter:
     router = APIRouter(tags=["Jobs Result"])
 
@@ -44,6 +48,18 @@ def create_jobs_result_router(
             company_name: str,
     ):
         queries = GetCompanyJobs(
+            company_en_name=company_name,
+        )
+        return await query_handler.handle(query=queries)
+
+    @router.get("/{company_name}/{job_id}")
+    async def get_job_details(  # pyright: ignore[reportUnusedFunction]
+            query_handler: Annotated[GetJobDetailsHandler, Depends(provide_job_details_handler)],
+            company_name: str,
+            job_id: UUID,
+    ):
+        queries = GetJobDetailsQuery(
+            job_posting_id=job_id,
             company_en_name=company_name,
         )
         return await query_handler.handle(query=queries)

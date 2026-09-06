@@ -2,15 +2,17 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.elements import ColumnElement
 
+from application.jobs_search.dto.job_details import JobDetails
 from application.jobs_search.dto.job_search_result import JobSearchResult
 from application.jobs_search.ports.jobs_search_repository import (
     JobsSearchRepository,
     GetJobsQueries,
-    GetCompanyJobsQueries,
+    GetCompanyJobsQueries, GetJobDetailsQueries,
 )
 from ..models.job_posting import JobPosting as JobPostingORMModel
 from ..models.company import Company as CompanyORMModel
 from ..models.job_categories import JobCategory as JobCategoryORMModel
+from ..models.company_activity import CompanyActivity as CompanyActivityORMModel
 from ..models.province import Province as ProvinceORMModel
 from ..models.salary_range import SalaryRange as SalaryRangeORMModel
 from ..models.city import City as CityORMModel
@@ -108,8 +110,8 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
         ]
 
     async def get_company_jobs(
-        self,
-        queries: GetCompanyJobsQueries,
+            self,
+            queries: GetCompanyJobsQueries,
     ) -> list[JobSearchResult]:
 
         stmt = (
@@ -166,3 +168,56 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
             )
             for row in rows
         ]
+
+    async def get_job_details(self, queries: GetJobDetailsQueries) -> JobDetails:
+        stmt = (select(
+            *JobPostingORMModel.__table__.c,
+            CompanyORMModel.persian_name.label("company_title"),
+            CompanyORMModel.name.label("company_en_title"),
+            CompanyORMModel.personnel_count.label("company_employee_count"),
+            CompanyActivityORMModel.title.label("company_activity"),
+            CityORMModel.name.label("city"),
+            ProvinceORMModel.name.label("province"),
+            JobCategoryORMModel.title.label("job_category"),
+            SalaryRangeORMModel.title.label("salary_range"),
+        )
+        .join(JobPostingORMModel.company)
+        .join(CompanyORMModel.activity)
+        .join(JobPostingORMModel.city)
+        .join(JobPostingORMModel.province)
+        .join(JobPostingORMModel.job_category)
+        .join(JobPostingORMModel.salary_range)
+        .where(
+            JobPostingORMModel.id == queries.job_posting_id,
+            CompanyORMModel.name == queries.company_en_name,
+        )
+        )
+
+        result = await self.session.execute(stmt)
+        details = result.mappings().one_or_none()
+
+        if details is None:
+            raise Exception
+
+        return JobDetails(
+            id=details.id,
+            company_title=details.company_title,
+            company_en_title=details.company_en_title,
+            company_activity=details.company_activity,
+            company_employee_count=details.company_employee_count,
+            city=details.city,
+            province=details.province,
+            job_category=details.job_category,
+            job_title=details.job_title,
+            job_description=details.job_description,
+            company_overview=details.company_overview,
+            employment_type=details.employment_type,
+            work_mode=details.work_mode,
+            salary_range=details.salary_range,
+            work_experience=details.work_experience,
+            minimum_education=details.minimum_education,
+            gender=details.gender,
+            military_status=details.military_status,
+            post_notifications=details.post_notifications,
+            status=details.status,
+        )
