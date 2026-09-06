@@ -1,16 +1,11 @@
 """Database metadata for privately stored files."""
 
-from typing import TYPE_CHECKING
 from uuid import UUID
 
-from sqlalchemy import BigInteger, CheckConstraint, ForeignKey, Integer, String, Uuid
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import BigInteger, CheckConstraint, String, Uuid
+from sqlalchemy.orm import Mapped, mapped_column
 
 from infrastructure.persistence.sqlalchemy.base import Base
-
-if TYPE_CHECKING:
-    from .applicant_profile import ApplicantProfile
-    from .user import User
 
 
 class Media(Base):
@@ -18,32 +13,12 @@ class Media(Base):
 
     __tablename__ = "media"
     __table_args__ = (
-        CheckConstraint(
-            "category IN ('company_logo', 'user_avatar', 'resume', 'attachment')",
-            name="ck_media_category",
-        ),
         CheckConstraint("size_bytes > 0", name="ck_media_size_bytes_positive"),
     )
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, init=False)
-    owner_id: Mapped[UUID] = mapped_column(
-        Uuid,
-        ForeignKey("users.id", ondelete="CASCADE"),
-        nullable=False,
-        index=True,
-    )
-    category: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
     original_name: Mapped[str] = mapped_column(String(255), nullable=False)
     storage_key: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
     mime_type: Mapped[str] = mapped_column(String(127), nullable=False)
     size_bytes: Mapped[int] = mapped_column(BigInteger, nullable=False)
     checksum_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
-
-    owner: Mapped["User"] = relationship("User", back_populates="media_files", init=False)
-    attached_resume_profile: Mapped["ApplicantProfile | None"] = relationship(
-        "ApplicantProfile",
-        back_populates="attached_resume",
-        uselist=False,
-        passive_deletes=True,
-        init=False,
-    )

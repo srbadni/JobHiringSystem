@@ -4,8 +4,13 @@ from typing import Any
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
 from application.common.ports.unit_of_work import UnitOfWork
-from infrastructure.persistence.sqlalchemy.repositories.sqlalchemy_company_repository import SQLAlchemyCompanyRepository
-from src.infrastructure.persistence.sqlalchemy.repositories.sqlalchemy_company_membership_repository import SqlAlchemyCompanyMembershipRepository
+from .repositories.sqlalchemy_company_repository import SQLAlchemyCompanyRepository
+from .repositories.sqlalchemy_company_membership_repository import SqlAlchemyCompanyMembershipRepository
+from .repositories.sqlalchemy_job_posting_repository import SqlAlchemyJobPostingRepository
+from .repositories.sqlalchemy_jobs_search_repository import SQLAlchemyJobsSearchRepository
+from .repositories.sqlalchemy_applicant_profiles_repository import SQLAlchemyApplicantProfilesRepository
+from .repositories.sqlalchemy_attached_resume_repository import SQLAlchemyAttachedResumesRepository
+from .repositories.sqlalchemy_media_repository import SQLAlchemyMediaRepository
 from .repositories.sqlalchemy_user_repository import (
     SqlAlchemyUsersRepository,
 )
@@ -21,6 +26,11 @@ class SqlAlchemyUnitOfWork(UnitOfWork):
         self.users = SqlAlchemyUsersRepository(self.session)
         self.companies = SQLAlchemyCompanyRepository(self.session)
         self.company_memberships = SqlAlchemyCompanyMembershipRepository(self.session)
+        self.job_postings = SqlAlchemyJobPostingRepository(self.session)
+        self.jobs_search = SQLAlchemyJobsSearchRepository(self.session)
+        self.media = SQLAlchemyMediaRepository(self.session)
+        self.attached_resumes = SQLAlchemyAttachedResumesRepository(self.session)
+        self.applicant_profiles = SQLAlchemyApplicantProfilesRepository(self.session)
 
         return self
 
