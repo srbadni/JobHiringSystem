@@ -15,9 +15,17 @@ class GetJobsQueries:
     work_experiences: list[RelevantWorkExperience] | None = None
     salary_range_ids: list[UUID] | None = None
 
+@dataclass(slots=True)
+class GetCompanyJobsQueries:
+    company_en_name: str
+
 
 class JobsSearchRepository(ABC):
 
     @abstractmethod
     async def get_jobs(self, queries: GetJobsQueries) -> list[JobSearchResult]:
+        pass
+
+    @abstractmethod
+    async def get_company_jobs(self, queries: GetCompanyJobsQueries) -> list[JobSearchResult]:
         pass
