@@ -42,7 +42,7 @@ def create_jobs_result_router(
         )
         return await query_handler.handle(query=queries)
 
-    @router.get("/{company_name}/jobs-list")
+    @router.get("/companies/{company_name}/jobs")
     async def get_company_jobs(  # pyright: ignore[reportUnusedFunction]
             query_handler: Annotated[GetCompanyJobsHandler, Depends(provide_company_jobs_result_handler)],
             company_name: str,
@@ -52,7 +52,7 @@ def create_jobs_result_router(
         )
         return await query_handler.handle(query=queries)
 
-    @router.get("/{company_name}/{job_id}")
+    @router.get("/companies/{company_name}/jobs/{job_id}")
     async def get_job_details(  # pyright: ignore[reportUnusedFunction]
             query_handler: Annotated[GetJobDetailsHandler, Depends(provide_job_details_handler)],
             company_name: str,
