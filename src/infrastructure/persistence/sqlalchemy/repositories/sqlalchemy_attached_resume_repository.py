@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from application.attached_resume.ports.attached_resumes_repository import AttachedResumesRepository
+from application.applicant_profile.ports.attached_resumes_repository import AttachedResumesRepository
 from domain.attached_resume.models import AttachedResume
 from ..models.attached_resume import AttachedResume as AttachedResumeORMModel
 

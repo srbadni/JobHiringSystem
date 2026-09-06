@@ -3,7 +3,7 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from application.job_posting.ports.job_posting_respository import JobPostingRepository
+from application.job_management.ports.job_posting_respository import JobPostingRepository
 from domain.job_posting.models import JobPosting
 from ..models.job_posting import JobPosting as JobPostingORMModel
 

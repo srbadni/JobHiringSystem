@@ -2,12 +2,12 @@ from abc import ABC, abstractmethod
 
 from application.jobs_search.ports.jobs_search_repository import JobsSearchRepository
 from application.applicant_profile.ports.applicant_profiles_repository import ApplicantProfilesRepository
-from application.attached_resume.ports.attached_resumes_repository import AttachedResumesRepository
+from application.applicant_profile.ports.attached_resumes_repository import AttachedResumesRepository
 
-from ...job_posting.ports.job_posting_respository import JobPostingRepository
 
 from ...companies.ports.repositories.company_repository import CompanyRepository
 from ...company_membership.ports.company_membership_repository import CompanyMembershipRepository
+from ...job_management.ports.job_posting_respository import JobPostingRepository
 from ...media.ports.media_repository import MediaRepository
 
 from ...users.ports.users_repository import UsersRepository
