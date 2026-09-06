@@ -19,6 +19,7 @@ from bootstrap.users_providers import (
 from bootstrap.jobs_result_providers import (
     provide_jobs_result_handler,
     provide_company_jobs_result_handler,
+    provide_company_details_handler,
     provide_job_details_handler,
 )
 from bootstrap.media_providers import provide_create_media_handler
@@ -62,6 +63,7 @@ def create_app() -> FastAPI:
     jobs_result_router = create_jobs_result_router(
         provide_jobs_result_handler=provide_jobs_result_handler,
         provide_company_jobs_result_handler=provide_company_jobs_result_handler,
+        provide_company_details_handler=provide_company_details_handler,
         provide_job_details_handler=provide_job_details_handler,
     )
 

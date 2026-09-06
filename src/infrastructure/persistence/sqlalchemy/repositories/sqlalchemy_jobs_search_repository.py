@@ -3,11 +3,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.elements import ColumnElement
 
 from application.jobs_search.dto.job_details import JobDetails
+from application.jobs_search.dto.company_details import CompanyDetails
 from application.jobs_search.dto.job_search_result import JobSearchResult
 from application.jobs_search.ports.jobs_search_repository import (
     JobsSearchRepository,
     GetJobsQueries,
-    GetCompanyJobsQueries, GetJobDetailsQueries,
+    GetCompanyJobsQueries, GetCompanyDetailsQueries, GetJobDetailsQueries,
 )
 from ..models.job_posting import JobPosting as JobPostingORMModel
 from ..models.company import Company as CompanyORMModel
@@ -220,4 +221,35 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
             military_status=details.military_status,
             post_notifications=details.post_notifications,
             status=details.status,
+        )
+
+    async def get_company_details(self, queries: GetCompanyDetailsQueries) -> CompanyDetails:
+        stmt = (
+            select(
+                CompanyORMModel.persian_name.label("name"),
+                CompanyORMModel.name.label("english_name"),
+                CompanyActivityORMModel.title.label("activity"),
+                CompanyORMModel.personnel_count.label("employee_count"),
+                CityORMModel.name.label("city"),
+                ProvinceORMModel.name.label("province"),
+            )
+            .join(CompanyORMModel.activity)
+            .join(CompanyORMModel.city)
+            .join(CompanyORMModel.province)
+            .where(CompanyORMModel.name == queries.company_en_name)
+        )
+
+        result = await self.session.execute(stmt)
+        details = result.mappings().one_or_none()
+
+        if details is None:
+            raise Exception
+
+        return CompanyDetails(
+            name=details.name,
+            english_name=details.english_name,
+            activity=details.activity,
+            employee_count=details.employee_count,
+            city=details.city,
+            province=details.province,
         )
