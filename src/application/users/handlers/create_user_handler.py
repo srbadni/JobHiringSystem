@@ -25,12 +25,11 @@ class CreateUserCommandHandler:
                     detail="A user with this email already exists.",
                 )
 
-            user = User(
+            user = User.create(
                 full_name=command.full_name,
                 phone_number=command.phone_number,
                 email=command.email,
                 hashed_password=hashed_password,
-                user_type=UserType.APPLICANT,
                 profile_image_url=command.profile_image_url,
             )
 
