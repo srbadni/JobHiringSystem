@@ -10,7 +10,7 @@ class UpdateJobPostingHandler:
 
     async def handle(self, command: UpdateJobPostingCommand) -> JobPosting:
         async with self.uow:
-            current = await self.uow.job_postings.get_by_id(command.job_posting_id)
+            current = await self.uow.job_postings.get_by_id(command.job_posting_id, command.company_id)
             job_posting = JobPosting(
                 id=command.job_posting_id,
                 company_id=command.company_id,

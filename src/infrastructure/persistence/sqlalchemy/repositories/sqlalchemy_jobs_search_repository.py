@@ -17,6 +17,7 @@ from ..models.company_activity import CompanyActivity as CompanyActivityORMModel
 from ..models.province import Province as ProvinceORMModel
 from ..models.salary_range import SalaryRange as SalaryRangeORMModel
 from ..models.city import City as CityORMModel
+from domain.exceptions import ResourceNotFoundError
 
 
 class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
@@ -198,7 +199,7 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
         details = result.mappings().one_or_none()
 
         if details is None:
-            raise Exception
+            raise ResourceNotFoundError("Job posting was not found for this company")
 
         return JobDetails(
             id=details.id,
@@ -243,7 +244,7 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
         details = result.mappings().one_or_none()
 
         if details is None:
-            raise Exception
+            raise ResourceNotFoundError("Company was not found")
 
         return CompanyDetails(
             name=details.name,

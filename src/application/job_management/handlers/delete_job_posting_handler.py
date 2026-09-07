@@ -9,5 +9,5 @@ class DeleteJobPostingHandler:
 
     async def handle(self, command: DeleteJobPostingCommand) -> None:
         async with self.uow:
-            await self.uow.job_postings.delete(command.job_posting_id)
+            await self.uow.job_postings.delete(command.job_posting_id, command.company_id)
             await self.uow.commit()

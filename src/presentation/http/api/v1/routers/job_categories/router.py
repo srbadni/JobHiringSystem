@@ -32,7 +32,7 @@ def create_job_categories_router(
     provide_update_handler: UpdateHandlerProvider,
     provide_delete_handler: DeleteHandlerProvider,
 ) -> APIRouter:
-    router = APIRouter(tags=["JobCategories"])
+    router = APIRouter(tags=["Admin - Job Categories"])
 
     @router.post("", status_code=status.HTTP_201_CREATED, response_model=JobCategoryRead)
     async def create_job_category(
@@ -50,30 +50,30 @@ def create_job_categories_router(
     ):
         return await handler.handle(ListJobCategoriesQuery())
 
-    @router.get("/{job_category_id}", response_model=JobCategoryRead)
+    @router.get("/{category_id}", response_model=JobCategoryRead)
     async def get_job_category(
-        job_category_id: UUID,
+        category_id: UUID,
         handler: Annotated[GetJobCategoryByIdQueryHandler, Depends(provide_get_by_id_handler)],
     ):
-        return await handler.handle(GetJobCategoryByIdQuery(job_category_id=job_category_id))
+        return await handler.handle(GetJobCategoryByIdQuery(job_category_id=category_id))
 
-    @router.put("/{job_category_id}", response_model=JobCategoryRead)
+    @router.put("/{category_id}", response_model=JobCategoryRead)
     async def update_job_category(
-        job_category_id: UUID,
+        category_id: UUID,
         data: JobCategoryUpdate,
         handler: Annotated[UpdateJobCategoryHandler, Depends(provide_update_handler)],
     ):
         return await handler.handle(UpdateJobCategoryCommand(
-            job_category_id=job_category_id,
+            job_category_id=category_id,
             code=data.code,
             title=data.title,
         ))
 
-    @router.delete("/{job_category_id}", status_code=status.HTTP_204_NO_CONTENT)
+    @router.delete("/{category_id}", status_code=status.HTTP_204_NO_CONTENT)
     async def delete_job_category(
-        job_category_id: UUID,
+        category_id: UUID,
         handler: Annotated[DeleteJobCategoryHandler, Depends(provide_delete_handler)],
     ) -> None:
-        await handler.handle(DeleteJobCategoryCommand(job_category_id=job_category_id))
+        await handler.handle(DeleteJobCategoryCommand(job_category_id=category_id))
 
     return router

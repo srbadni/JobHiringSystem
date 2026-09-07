@@ -6,5 +6,4 @@ from uuid import UUID
 class CreateJobApplicationCommand:
     applicant_id: UUID
     job_posting_id: UUID
-    company_name: str
     folder_id: UUID | None = None

@@ -6,6 +6,7 @@ from domain.company_membership.models import CompanyMembership
 from ..command.create_employer_and_company import CreateEmployerAndCompany
 from ...common.ports.password_hasher import PasswordHasher
 from ...common.ports.unit_of_work import UnitOfWork
+from domain.user.exceptions import UserAlreadyExistsError
 
 
 class CreateEmployerAndCompanyHandler:
@@ -15,6 +16,8 @@ class CreateEmployerAndCompanyHandler:
 
     async def handle(self, command: CreateEmployerAndCompany) -> User:
         async with self.uow:
+            if await self.uow.users.exists_by_email(command.employer.email):
+                raise UserAlreadyExistsError("A user with this email already exists.")
             hashed_password = self.hasher.hash(command.employer.password)
             user_domain = User(
                 full_name=command.employer.full_name,

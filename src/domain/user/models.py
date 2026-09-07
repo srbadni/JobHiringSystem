@@ -19,11 +19,12 @@ class User:
     @classmethod
     def create(
             cls,
-            full_name,
-            phone_number,
-            email,
-            hashed_password,
-            profile_image_url,
+            full_name: str,
+            phone_number: str,
+            email: str,
+            hashed_password: str,
+            profile_image_url: str | None,
+            user_type: UserType = UserType.APPLICANT,
     ) -> User:
 
         return cls(
@@ -32,4 +33,5 @@ class User:
             email=email,
             hashed_password=hashed_password,
             profile_image_url=profile_image_url,
+            user_type=user_type,
         )

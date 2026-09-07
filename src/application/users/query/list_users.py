@@ -1,6 +1,7 @@
 from dataclasses import dataclass
+from domain.user.enums import UserType
 
 
 @dataclass(frozen=True, slots=True)
 class ListUsersQuery:
-    pass
+    user_type: UserType | None = None

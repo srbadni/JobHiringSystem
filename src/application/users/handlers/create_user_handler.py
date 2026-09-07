@@ -1,8 +1,6 @@
-from fastapi import HTTPException
-
 from domain.applicant_profile.models import ApplicantProfile
 from domain.user.models import User
-from domain.user.enums import UserType
+from domain.user.exceptions import UserAlreadyExistsError
 from ..command.create_user import CreateUserCommand
 from ...common.ports.password_hasher import PasswordHasher
 from ...common.ports.unit_of_work import UnitOfWork
@@ -20,10 +18,7 @@ class CreateUserCommandHandler:
 
             exists = await self.uow.users.exists_by_email(command.email)
             if exists:
-                raise HTTPException(
-                    status_code=409,
-                    detail="A user with this email already exists.",
-                )
+                raise UserAlreadyExistsError("A user with this email already exists.")
 
             user = User.create(
                 full_name=command.full_name,
@@ -31,15 +26,14 @@ class CreateUserCommandHandler:
                 email=command.email,
                 hashed_password=hashed_password,
                 profile_image_url=command.profile_image_url,
+                user_type=command.user_type,
             )
 
             result = await self.uow.users.add(user)
-            await self.uow.applicant_profiles.add(ApplicantProfile(
-                applicant_id=result.id,
-            ))
+            if command.user_type.value == "applicant":
+                await self.uow.applicant_profiles.add(ApplicantProfile(applicant_id=result.id))
 
             await self.uow.commit()
 
             return result
-
 

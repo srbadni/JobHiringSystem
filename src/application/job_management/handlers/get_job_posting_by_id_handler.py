@@ -10,4 +10,4 @@ class GetJobPostingByIdQueryHandler:
 
     async def handle(self, query: GetJobPostingByIdQuery) -> JobPosting:
         async with self.uow:
-            return await self.uow.job_postings.get_by_id(query.job_posting_id)
+            return await self.uow.job_postings.get_by_id(query.job_posting_id, query.company_id)

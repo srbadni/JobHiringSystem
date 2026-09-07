@@ -36,12 +36,13 @@ class SqlAlchemyJobPostingRepository(JobPostingRepository):
             id=model.id,
         )
 
-    async def list(self) -> list[JobPosting]:
-        result = await self.session.scalars(select(JobPostingORMModel))
+    async def list(self, company_id: UUID) -> list[JobPosting]:
+        result = await self.session.scalars(select(JobPostingORMModel).where(JobPostingORMModel.company_id == company_id))
         return [self._to_domain(model) for model in result.all()]
 
-    async def get_by_id(self, job_posting_id: UUID) -> JobPosting:
-        model = await self.session.get_one(JobPostingORMModel, job_posting_id)
+    async def get_by_id(self, job_posting_id: UUID, company_id: UUID) -> JobPosting:
+        model = (await self.session.scalars(select(JobPostingORMModel).where(
+            JobPostingORMModel.id == job_posting_id, JobPostingORMModel.company_id == company_id))).one()
         return self._to_domain(model)
 
     async def add(self, job_posting: JobPosting) -> JobPosting:
@@ -93,7 +94,8 @@ class SqlAlchemyJobPostingRepository(JobPostingRepository):
         await self.session.flush()
         return self._to_domain(model)
 
-    async def delete(self, job_posting_id: UUID) -> None:
-        model = await self.session.get_one(JobPostingORMModel, job_posting_id)
+    async def delete(self, job_posting_id: UUID, company_id: UUID) -> None:
+        model = (await self.session.scalars(select(JobPostingORMModel).where(
+            JobPostingORMModel.id == job_posting_id, JobPostingORMModel.company_id == company_id))).one()
         await self.session.delete(model)
         await self.session.flush()

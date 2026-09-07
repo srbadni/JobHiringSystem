@@ -7,11 +7,11 @@ from domain.job_posting.models import JobPosting
 class JobPostingRepository(ABC):
 
     @abstractmethod
-    async def list(self) -> list[JobPosting]:
+    async def list(self, company_id: UUID) -> list[JobPosting]:
         pass
 
     @abstractmethod
-    async def get_by_id(self, job_posting_id: UUID) -> JobPosting:
+    async def get_by_id(self, job_posting_id: UUID, company_id: UUID) -> JobPosting:
         pass
 
     @abstractmethod
@@ -23,5 +23,5 @@ class JobPostingRepository(ABC):
         pass
 
     @abstractmethod
-    async def delete(self, job_posting_id: UUID) -> None:
+    async def delete(self, job_posting_id: UUID, company_id: UUID) -> None:
         pass

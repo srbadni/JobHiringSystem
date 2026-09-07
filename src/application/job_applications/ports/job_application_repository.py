@@ -6,7 +6,7 @@ from domain.job_application.models import JobApplication
 
 class JobApplicationRepository(ABC):
     @abstractmethod
-    async def add(self, application: JobApplication, company_name: str) -> JobApplication:
+    async def add(self, application: JobApplication) -> JobApplication:
         pass
 
     @abstractmethod
@@ -14,5 +14,5 @@ class JobApplicationRepository(ABC):
         pass
 
     @abstractmethod
-    async def get_by_id(self, application_id: UUID) -> JobApplication:
+    async def get_by_id(self, application_id: UUID, applicant_id: UUID) -> JobApplication:
         pass

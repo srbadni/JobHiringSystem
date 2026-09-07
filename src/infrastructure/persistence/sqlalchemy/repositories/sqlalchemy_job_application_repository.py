@@ -6,7 +6,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from application.job_applications.ports.job_application_repository import JobApplicationRepository
 from domain.job_application.models import JobApplication
 from domain.job_application.exceptions import DuplicateJobApplicationError, JobApplicationNotFoundError
-from ..models.company import Company as CompanyORMModel
 from ..models.job_application import JobApplication as JobApplicationORMModel
 from ..models.job_posting import JobPosting as JobPostingORMModel
 
@@ -25,18 +24,13 @@ class SqlAlchemyJobApplicationRepository(JobApplicationRepository):
             status=model.status,
         )
 
-    async def add(self, application: JobApplication, company_name: str) -> JobApplication:
+    async def add(self, application: JobApplication) -> JobApplication:
         job = await self.session.scalar(
-            select(JobPostingORMModel.id)
-            .join(CompanyORMModel, JobPostingORMModel.company_id == CompanyORMModel.id)
-            .where(
-                JobPostingORMModel.id == application.job_posting_id,
-                CompanyORMModel.name == company_name,
-            )
+            select(JobPostingORMModel.id).where(JobPostingORMModel.id == application.job_posting_id)
         )
         if job is None:
             raise JobApplicationNotFoundError(
-                "Job posting was not found for the requested company"
+                "Job posting was not found"
             )
 
         existing_application = await self.session.scalar(
@@ -68,8 +62,11 @@ class SqlAlchemyJobApplicationRepository(JobApplicationRepository):
         )
         return [self._to_domain(model) for model in models.all()]
 
-    async def get_by_id(self, application_id: UUID) -> JobApplication:
-        model = await self.session.get(JobApplicationORMModel, application_id)
+    async def get_by_id(self, application_id: UUID, applicant_id: UUID) -> JobApplication:
+        model = await self.session.scalar(select(JobApplicationORMModel).where(
+            JobApplicationORMModel.id == application_id,
+            JobApplicationORMModel.applicant_id == applicant_id,
+        ))
         if model is None:
             raise JobApplicationNotFoundError("Job application was not found")
         return self._to_domain(model)

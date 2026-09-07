@@ -32,7 +32,7 @@ def create_salary_ranges_router(
     provide_update_handler: UpdateHandlerProvider,
     provide_delete_handler: DeleteHandlerProvider,
 ) -> APIRouter:
-    router = APIRouter(tags=["SalaryRanges"])
+    router = APIRouter(tags=["Admin - Salary Ranges"])
 
     @router.post("", status_code=status.HTTP_201_CREATED, response_model=SalaryRangeRead)
     async def create_salary_range(
@@ -51,31 +51,31 @@ def create_salary_ranges_router(
     ):
         return await handler.handle(ListSalaryRangesQuery())
 
-    @router.get("/{salary_range_id}", response_model=SalaryRangeRead)
+    @router.get("/{range_id}", response_model=SalaryRangeRead)
     async def get_salary_range(
-        salary_range_id: UUID,
+        range_id: UUID,
         handler: Annotated[GetSalaryRangeByIdQueryHandler, Depends(provide_get_by_id_handler)],
     ):
-        return await handler.handle(GetSalaryRangeByIdQuery(salary_range_id=salary_range_id))
+        return await handler.handle(GetSalaryRangeByIdQuery(salary_range_id=range_id))
 
-    @router.put("/{salary_range_id}", response_model=SalaryRangeRead)
+    @router.put("/{range_id}", response_model=SalaryRangeRead)
     async def update_salary_range(
-        salary_range_id: UUID,
+        range_id: UUID,
         data: SalaryRangeUpdate,
         handler: Annotated[UpdateSalaryRangeHandler, Depends(provide_update_handler)],
     ):
         return await handler.handle(UpdateSalaryRangeCommand(
-            salary_range_id=salary_range_id,
+            salary_range_id=range_id,
             title=data.title,
             min_salary=data.min_salary,
             max_salary=data.max_salary,
         ))
 
-    @router.delete("/{salary_range_id}", status_code=status.HTTP_204_NO_CONTENT)
+    @router.delete("/{range_id}", status_code=status.HTTP_204_NO_CONTENT)
     async def delete_salary_range(
-        salary_range_id: UUID,
+        range_id: UUID,
         handler: Annotated[DeleteSalaryRangeHandler, Depends(provide_delete_handler)],
     ) -> None:
-        await handler.handle(DeleteSalaryRangeCommand(salary_range_id=salary_range_id))
+        await handler.handle(DeleteSalaryRangeCommand(salary_range_id=range_id))
 
     return router

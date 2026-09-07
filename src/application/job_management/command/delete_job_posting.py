@@ -5,3 +5,4 @@ from uuid import UUID
 @dataclass(frozen=True, slots=True)
 class DeleteJobPostingCommand:
     job_posting_id: UUID
+    company_id: UUID

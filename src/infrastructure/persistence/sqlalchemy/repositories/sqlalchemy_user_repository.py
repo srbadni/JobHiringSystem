@@ -1,4 +1,7 @@
 from sqlalchemy import select, exists
+from uuid import UUID
+from domain.user.enums import UserType
+from domain.user.exceptions import UserNotFoundError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from application.users.ports.users_repository import UsersRepository
@@ -25,11 +28,14 @@ class SqlAlchemyUsersRepository(UsersRepository):
             profile_image_url=model.profile_image_url,
         )
 
-    async def list(self) -> list[User]:
-        result = await self.session.scalars(select(UserModel))
+    async def list(self, user_type: UserType | None = None) -> list[User]:
+        statement = select(UserModel)
+        if user_type is not None:
+            statement = statement.where(UserModel.user_type == user_type)
+        result = await self.session.scalars(statement)
         return [self._to_domain(model) for model in result.all()]
 
-    async def get_by_id(self, user_id: str) -> User:
+    async def get_by_id(self, user_id: UUID) -> User:
         result = await self.session.scalars(
             select(UserModel).where(UserModel.id == user_id)
         )
@@ -64,3 +70,22 @@ class SqlAlchemyUsersRepository(UsersRepository):
         await self.session.flush()
 
         return self._to_domain(model)
+
+    async def update(self, user: User) -> User:
+        model = await self.session.get(UserModel, user.id)
+        if model is None:
+            raise UserNotFoundError("User was not found")
+        model.full_name = user.full_name
+        model.phone_number = user.phone_number
+        model.email = user.email
+        model.profile_image_url = user.profile_image_url
+        # Account type is deliberately immutable through admin updates.
+        await self.session.flush()
+        return self._to_domain(model)
+
+    async def delete(self, user_id: UUID) -> None:
+        model = await self.session.get(UserModel, user_id)
+        if model is None:
+            raise UserNotFoundError("User was not found")
+        await self.session.delete(model)
+        await self.session.flush()

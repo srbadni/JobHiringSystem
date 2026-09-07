@@ -3,6 +3,8 @@ from application.users.handlers import (
     GetUserByEmailQueryHandler,
     GetUserByIdQueryHandler,
     ListUsersQueryHandler,
+    UpdateUserCommandHandler,
+    DeleteUserCommandHandler,
 )
 from bootstrap.common_providers import password_hasher, provide_uow
 
@@ -30,3 +32,11 @@ def provide_get_user_by_email_handler() -> GetUserByEmailQueryHandler:
     return GetUserByEmailQueryHandler(
         uow=provide_uow(),
     )
+
+
+def provide_update_user_handler() -> UpdateUserCommandHandler:
+    return UpdateUserCommandHandler(uow=provide_uow())
+
+
+def provide_delete_user_handler() -> DeleteUserCommandHandler:
+    return DeleteUserCommandHandler(uow=provide_uow())
