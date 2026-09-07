@@ -15,6 +15,6 @@ class CreateJobApplicationHandler:
                 job_posting_id=command.job_posting_id,
                 folder_id=command.folder_id,
             )
-            result = await self.uow.job_applications.add(application, command.company_name)
+            result = await self.uow.job_applications.add(application)
             await self.uow.commit()
             return result

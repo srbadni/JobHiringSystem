@@ -32,7 +32,7 @@ def create_company_activities_router(
     provide_update_handler: UpdateHandlerProvider,
     provide_delete_handler: DeleteHandlerProvider,
 ) -> APIRouter:
-    router = APIRouter(tags=["CompanyActivities"])
+    router = APIRouter(tags=["Admin - Company Activities"])
 
     @router.post("", status_code=status.HTTP_201_CREATED, response_model=CompanyActivityRead)
     async def create_company_activity(
@@ -50,30 +50,30 @@ def create_company_activities_router(
     ):
         return await handler.handle(ListCompanyActivitiesQuery())
 
-    @router.get("/{company_activity_id}", response_model=CompanyActivityRead)
+    @router.get("/{activity_id}", response_model=CompanyActivityRead)
     async def get_company_activity(
-        company_activity_id: UUID,
+        activity_id: UUID,
         handler: Annotated[GetCompanyActivityByIdQueryHandler, Depends(provide_get_by_id_handler)],
     ):
-        return await handler.handle(GetCompanyActivityByIdQuery(company_activity_id=company_activity_id))
+        return await handler.handle(GetCompanyActivityByIdQuery(company_activity_id=activity_id))
 
-    @router.put("/{company_activity_id}", response_model=CompanyActivityRead)
+    @router.put("/{activity_id}", response_model=CompanyActivityRead)
     async def update_company_activity(
-        company_activity_id: UUID,
+        activity_id: UUID,
         data: CompanyActivityUpdate,
         handler: Annotated[UpdateCompanyActivityHandler, Depends(provide_update_handler)],
     ):
         return await handler.handle(UpdateCompanyActivityCommand(
-            company_activity_id=company_activity_id,
+            company_activity_id=activity_id,
             code=data.code,
             title=data.title,
         ))
 
-    @router.delete("/{company_activity_id}", status_code=status.HTTP_204_NO_CONTENT)
+    @router.delete("/{activity_id}", status_code=status.HTTP_204_NO_CONTENT)
     async def delete_company_activity(
-        company_activity_id: UUID,
+        activity_id: UUID,
         handler: Annotated[DeleteCompanyActivityHandler, Depends(provide_delete_handler)],
     ) -> None:
-        await handler.handle(DeleteCompanyActivityCommand(company_activity_id=company_activity_id))
+        await handler.handle(DeleteCompanyActivityCommand(company_activity_id=activity_id))
 
     return router

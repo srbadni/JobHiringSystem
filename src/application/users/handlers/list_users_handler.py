@@ -11,4 +11,4 @@ class ListUsersQueryHandler:
 
     async def handle(self, query: ListUsersQuery) -> list[User]:
         async with self.uow:
-            return await self.uow.users.list()
+            return await self.uow.users.list(query.user_type)

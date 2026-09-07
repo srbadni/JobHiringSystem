@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from uuid import UUID
 
 from domain.company.enums import EmployeeCount
 from domain.job_posting.enum import EmploymentType, WorkMode, RelevantWorkExperience, MinimumEducationLevel, Gender, \
@@ -7,7 +8,7 @@ from domain.job_posting.enum import EmploymentType, WorkMode, RelevantWorkExperi
 
 @dataclass
 class JobDetails:
-    id: str
+    id: UUID
     company_title: str
     company_en_title: str
     company_activity: str

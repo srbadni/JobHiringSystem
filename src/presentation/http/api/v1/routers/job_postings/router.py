@@ -15,6 +15,7 @@ from application.job_management.query.get_job_posting_by_id import GetJobPosting
 from application.job_management.query.list_job_postings import ListJobPostingsQuery
 
 from .schemas import JobPostingCreate, JobPostingRead, JobPostingUpdate
+from presentation.http.dependencies import SelectedCompanyId
 
 CreateJobPostingHandlerProvider = Callable[[], CreateJobPostingHandler]
 ListJobPostingsHandlerProvider = Callable[[], ListJobPostingsQueryHandler]
@@ -30,15 +31,16 @@ def create_job_postings_router(
     provide_delete_job_posting_handler: DeleteJobPostingHandlerProvider,
 ) -> APIRouter:
 
-    router = APIRouter(tags=["Job Postings"])
+    router = APIRouter(tags=["Company - Job Postings"])
 
     @router.post("", status_code=status.HTTP_201_CREATED, response_model=JobPostingRead)
     async def create_job_posting( # pyright: ignore[reportUnusedFunction]
             job_posting_data: JobPostingCreate,
+            company_id: SelectedCompanyId,
             command_handler: Annotated[CreateJobPostingHandler, Depends(provide_create_job_posting_handler)]
     ):
         command = CreateJobPostingCommand(
-            company_id=job_posting_data.company_id,
+            company_id=company_id,
             job_category_id=job_posting_data.job_category_id,
             province_id=job_posting_data.province_id,
             city_id=job_posting_data.city_id,
@@ -59,26 +61,29 @@ def create_job_postings_router(
 
     @router.get("", response_model=list[JobPostingRead])
     async def list_job_postings(  # pyright: ignore[reportUnusedFunction]
+            company_id: SelectedCompanyId,
             query_handler: Annotated[ListJobPostingsQueryHandler, Depends(provide_list_job_postings_handler)],
     ):
-        return await query_handler.handle(ListJobPostingsQuery())
+        return await query_handler.handle(ListJobPostingsQuery(company_id=company_id))
 
     @router.get("/{job_posting_id}", response_model=JobPostingRead)
     async def get_job_posting(  # pyright: ignore[reportUnusedFunction]
             job_posting_id: UUID,
+            company_id: SelectedCompanyId,
             query_handler: Annotated[GetJobPostingByIdQueryHandler, Depends(provide_get_job_posting_by_id_handler)],
     ):
-        return await query_handler.handle(GetJobPostingByIdQuery(job_posting_id=job_posting_id))
+        return await query_handler.handle(GetJobPostingByIdQuery(job_posting_id=job_posting_id, company_id=company_id))
 
     @router.put("/{job_posting_id}", response_model=JobPostingRead)
     async def update_job_posting(  # pyright: ignore[reportUnusedFunction]
             job_posting_id: UUID,
             job_posting_data: JobPostingUpdate,
+            company_id: SelectedCompanyId,
             command_handler: Annotated[UpdateJobPostingHandler, Depends(provide_update_job_posting_handler)],
     ):
         command = UpdateJobPostingCommand(
             job_posting_id=job_posting_id,
-            company_id=job_posting_data.company_id,
+            company_id=company_id,
             job_category_id=job_posting_data.job_category_id,
             province_id=job_posting_data.province_id,
             city_id=job_posting_data.city_id,
@@ -100,8 +105,9 @@ def create_job_postings_router(
     @router.delete("/{job_posting_id}", status_code=status.HTTP_204_NO_CONTENT)
     async def delete_job_posting(  # pyright: ignore[reportUnusedFunction]
             job_posting_id: UUID,
+            company_id: SelectedCompanyId,
             command_handler: Annotated[DeleteJobPostingHandler, Depends(provide_delete_job_posting_handler)],
     ) -> None:
-        await command_handler.handle(DeleteJobPostingCommand(job_posting_id=job_posting_id))
+        await command_handler.handle(DeleteJobPostingCommand(job_posting_id=job_posting_id, company_id=company_id))
 
     return router

@@ -7,7 +7,6 @@ from domain.job_posting.enum import EmploymentType, WorkMode, JobPostingStatus, 
 
 
 class JobPostingCreate(BaseModel):
-    company_id: UUID
     job_category_id: UUID
     province_id: UUID
     city_id: UUID
