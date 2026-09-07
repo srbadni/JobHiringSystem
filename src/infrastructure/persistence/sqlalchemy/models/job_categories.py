@@ -17,4 +17,4 @@ class JobCategory(Base):
     code: Mapped[str] = mapped_column(String, nullable=False)
     title: Mapped[str] = mapped_column(String, nullable=False)
 
-    job_postings: Mapped[list["JobPosting"]] = relationship("JobPosting", back_populates="job_category")
+    job_postings: Mapped[list["JobPosting"]] = relationship("JobPosting", back_populates="job_category", init=False)

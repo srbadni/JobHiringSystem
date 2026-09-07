@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
 
-from sqlalchemy import ForeignKey, Uuid, Enum
+from sqlalchemy import ForeignKey, Uuid, Enum, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from domain.job_application.enums import ApplicationStatus
@@ -15,6 +15,13 @@ if TYPE_CHECKING:
 
 class JobApplication(Base):
     __tablename__ = "job_applications"
+    __table_args__ = (
+        UniqueConstraint(
+            "applicant_id",
+            "job_posting_id",
+            name="uq_job_applications_applicant_job_posting",
+        ),
+    )
 
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, init=False, default_factory=uuid4)
     folder_id: Mapped[UUID | None] = mapped_column(

@@ -5,8 +5,12 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
 from application.common.ports.unit_of_work import UnitOfWork
 from .repositories.sqlalchemy_company_repository import SQLAlchemyCompanyRepository
+from .repositories.sqlalchemy_company_activity_repository import SqlAlchemyCompanyActivityRepository
+from .repositories.sqlalchemy_job_category_repository import SqlAlchemyJobCategoryRepository
+from .repositories.sqlalchemy_salary_range_repository import SqlAlchemySalaryRangeRepository
 from .repositories.sqlalchemy_company_membership_repository import SqlAlchemyCompanyMembershipRepository
 from .repositories.sqlalchemy_job_posting_repository import SqlAlchemyJobPostingRepository
+from .repositories.sqlalchemy_job_application_repository import SqlAlchemyJobApplicationRepository
 from .repositories.sqlalchemy_jobs_search_repository import SQLAlchemyJobsSearchRepository
 from .repositories.sqlalchemy_applicant_profiles_repository import SQLAlchemyApplicantProfilesRepository
 from .repositories.sqlalchemy_attached_resume_repository import SQLAlchemyAttachedResumesRepository
@@ -27,10 +31,14 @@ class SqlAlchemyUnitOfWork(UnitOfWork):
         self.companies = SQLAlchemyCompanyRepository(self.session)
         self.company_memberships = SqlAlchemyCompanyMembershipRepository(self.session)
         self.job_postings = SqlAlchemyJobPostingRepository(self.session)
+        self.job_applications = SqlAlchemyJobApplicationRepository(self.session)
         self.jobs_search = SQLAlchemyJobsSearchRepository(self.session)
         self.media = SQLAlchemyMediaRepository(self.session)
         self.attached_resumes = SQLAlchemyAttachedResumesRepository(self.session)
         self.applicant_profiles = SQLAlchemyApplicantProfilesRepository(self.session)
+        self.company_activities = SqlAlchemyCompanyActivityRepository(self.session)
+        self.job_categories = SqlAlchemyJobCategoryRepository(self.session)
+        self.salary_ranges = SqlAlchemySalaryRangeRepository(self.session)
 
         return self
 
