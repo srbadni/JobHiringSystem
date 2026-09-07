@@ -3,6 +3,20 @@ from pydantic import BaseModel
 
 from domain.job_posting.enum import Gender, MilitaryServiceStatus, MinimumEducationLevel, RelevantWorkExperience, \
     WorkMode, EmploymentType
+from domain.job_application.enums import ApplicationStatus
+
+
+class JobApplicationCreate(BaseModel):
+    applicant_id: UUID
+    folder_id: UUID | None = None
+
+
+class JobApplicationRead(BaseModel):
+    id: UUID
+    applicant_id: UUID
+    job_posting_id: UUID
+    folder_id: UUID | None
+    status: ApplicationStatus
 
 class JobSearchRead(BaseModel):
     id: UUID
