@@ -3,4 +3,19 @@ __pycache__/
 *.py[cod]
 
 .env
+.env.*
+!.env.example
 var/
+
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.import_linter_cache/
+
+node_modules/
+frontend/.next/
+frontend/out/
+frontend/dist/
+frontend/coverage/
+*.tsbuildinfo
