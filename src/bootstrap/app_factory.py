@@ -44,6 +44,11 @@ from bootstrap.jobs_result_providers import (
     provide_job_details_handler,
 )
 from bootstrap.media_providers import provide_create_media_handler
+from bootstrap.job_applications_providers import (
+    provide_create_job_application_handler,
+    provide_get_job_application_handler,
+    provide_list_my_job_applications_handler,
+)
 from bootstrap.applicant_profile_providers import (
     provide_educations_handler, provide_job_preference_handler,
     provide_language_skills_handler, provide_skills_handler,
@@ -60,10 +65,12 @@ from presentation.http.api.v1.routers.job_postings.router import create_job_post
 from presentation.http.api.v1.routers.jobs_result.router import create_jobs_result_router
 from presentation.http.api.v1.routers.resume_upload.router import create_resume_upload_router
 from presentation.http.api.v1.routers.applicant_profile.router import create_applicant_profile_router
+from presentation.http.exception_handlers import register_exception_handlers
 
 
 def create_app() -> FastAPI:
     app = FastAPI(title="Job Hiring System")
+    register_exception_handlers(app)
 
     company_activities_router = create_company_activities_router(
         provide_create_handler=provide_create_company_activity_handler,
@@ -113,6 +120,9 @@ def create_app() -> FastAPI:
         provide_company_jobs_result_handler=provide_company_jobs_result_handler,
         provide_company_details_handler=provide_company_details_handler,
         provide_job_details_handler=provide_job_details_handler,
+        provide_create_job_application_handler=provide_create_job_application_handler,
+        provide_list_my_job_applications_handler=provide_list_my_job_applications_handler,
+        provide_get_job_application_handler=provide_get_job_application_handler,
     )
 
     resume_upload_router = create_resume_upload_router(

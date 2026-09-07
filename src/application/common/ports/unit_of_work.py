@@ -5,6 +5,7 @@ from application.applicant_profile.ports.applicant_profiles_repository import Ap
 from application.applicant_profile.ports.attached_resumes_repository import AttachedResumesRepository
 from application.company_activities.ports.company_activity_repository import CompanyActivityRepository
 from application.job_categories.ports.job_category_repository import JobCategoryRepository
+from application.job_applications.ports.job_application_repository import JobApplicationRepository
 from application.salary_ranges.ports.salary_range_repository import SalaryRangeRepository
 
 
@@ -23,6 +24,7 @@ class UnitOfWork(ABC):
     companies: CompanyRepository
     company_memberships: CompanyMembershipRepository
     job_postings: JobPostingRepository
+    job_applications: JobApplicationRepository
     jobs_search: JobsSearchRepository
     media: MediaRepository
     attached_resumes: AttachedResumesRepository
