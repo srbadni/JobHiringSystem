@@ -33,7 +33,7 @@
 
   --color-border: var(--border);
 
-  --font-sans: var(--font-vazirmatn);
+  --font-sans: Tahoma, Arial, sans-serif;
 
   /* Font Sizes */
   --text-display: 52px;
@@ -97,7 +97,7 @@
   }
 
   body {
-    font-family: var(--font-vazirmatn), Tahoma, sans-serif;
+    font-family: Tahoma, Arial, sans-serif;
     font-size: 14px;
     line-height: 1.8;
   }
@@ -139,5 +139,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-vazirmatn), sans-serif;
+  font-family: Tahoma, Arial, sans-serif;
 }
