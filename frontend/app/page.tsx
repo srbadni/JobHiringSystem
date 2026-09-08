@@ -1,5 +1,5 @@
 import {Typography} from "@/features/widgets/typography";
-import JobSearchBar from "@/features/job-search/components/job-search-bar";
+import JobSearchBar from "@/features/job-search/components/job-search-bar/job-search-bar";
 
 export default function Home() {
   return <main>

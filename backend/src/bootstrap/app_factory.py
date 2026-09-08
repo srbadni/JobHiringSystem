@@ -168,7 +168,7 @@ def create_app() -> FastAPI:
 
     app.include_router(
         job_categories_router,
-        prefix="/api/v1/admin/job-categories",
+        prefix="/api/v1/job-categories",
     )
 
     app.include_router(

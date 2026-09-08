@@ -2,6 +2,7 @@ import type {Metadata} from "next";
 import {Vazirmatn} from "next/font/google";
 import "./globals.css";
 import Header from "@/features/shared/components/main-header";
+import Providers from "@/app/providers";
 
 const vazirmatn = Vazirmatn({
     variable: "--font-vazirmatn",
@@ -15,15 +16,17 @@ export const metadata: Metadata = {
 
 export default function RootLayout({children}: LayoutProps<"/">) {
     return (
-        <html
-            lang="fa"
-            dir="rtl"
-            className={`${vazirmatn.variable} h-full antialiased`}
-        >
-        <body className="min-h-full flex flex-col">
-        <Header />
-        {children}
-        </body>
-        </html>
+        <Providers>
+            <html
+                lang="fa"
+                dir="rtl"
+                className={`${vazirmatn.variable} h-full antialiased`}
+            >
+            <body className="min-h-full flex flex-col">
+            <Header/>
+            {children}
+            </body>
+            </html>
+        </Providers>
     );
 }
