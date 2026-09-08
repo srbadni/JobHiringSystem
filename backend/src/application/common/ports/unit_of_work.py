@@ -6,6 +6,7 @@ from application.applicant_profile.ports.attached_resumes_repository import Atta
 from application.company_activities.ports.company_activity_repository import CompanyActivityRepository
 from application.job_categories.ports.job_category_repository import JobCategoryRepository
 from application.job_applications.ports.job_application_repository import JobApplicationRepository
+from application.locations.ports.location_repository import LocationRepository
 from application.salary_ranges.ports.salary_range_repository import SalaryRangeRepository
 
 
@@ -32,6 +33,7 @@ class UnitOfWork(ABC):
     company_activities: CompanyActivityRepository
     job_categories: JobCategoryRepository
     salary_ranges: SalaryRangeRepository
+    locations: LocationRepository
 
     async def __aenter__(self):
         return self

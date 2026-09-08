@@ -18,9 +18,21 @@ class ApiContractTests(unittest.TestCase):
             "/api/v1/applicant/jobs/{job_id}/applications": {"post"},
             "/api/v1/applicant/applications": {"get"},
             "/api/v1/applicant/applications/{application_id}": {"get"},
+            "/api/v1/provinces": {"get"},
+            "/api/v1/cities": {"get"},
         }
         for path, methods in expected.items():
             self.assertEqual(methods, set(paths[path]))
+
+    def test_locations_are_public_and_grouped_together(self):
+        schema = create_app().openapi()
+        for path in ("/api/v1/provinces", "/api/v1/cities"):
+            operation = schema["paths"][path]["get"]
+            self.assertEqual(["Public - Locations"], operation["tags"])
+            self.assertNotIn("security", operation)
+
+        city_parameters = schema["paths"]["/api/v1/cities"]["get"]["parameters"]
+        self.assertIn("province_id", {parameter["name"] for parameter in city_parameters})
 
     def test_temporary_identity_is_header_not_body(self):
         schema = create_app().openapi()

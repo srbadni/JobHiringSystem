@@ -46,6 +46,10 @@ from bootstrap.jobs_result_providers import (
     provide_job_details_handler,
 )
 from bootstrap.media_providers import provide_create_media_handler
+from bootstrap.locations_providers import (
+    provide_list_cities_handler,
+    provide_list_provinces_handler,
+)
 from bootstrap.job_applications_providers import (
     provide_create_job_application_handler,
     provide_get_job_application_handler,
@@ -69,6 +73,7 @@ from presentation.http.api.v1.routers.applicant.companies import create_companie
 from presentation.http.api.v1.routers.applicant.applications import create_applications_router
 from presentation.http.api.v1.routers.resume_upload.router import create_resume_upload_router
 from presentation.http.api.v1.routers.applicant_profile.router import create_applicant_profile_router
+from presentation.http.api.v1.routers.locations.router import create_locations_router
 from presentation.http.exception_handlers import register_exception_handlers
 
 
@@ -138,6 +143,13 @@ def create_app() -> FastAPI:
         provide_language_skills_handler=provide_language_skills_handler,
         provide_job_preference_handler=provide_job_preference_handler,
     )
+
+    locations_router = create_locations_router(
+        provide_list_provinces_handler=provide_list_provinces_handler,
+        provide_list_cities_handler=provide_list_cities_handler,
+    )
+
+    app.include_router(locations_router, prefix="/api/v1")
 
     app.include_router(
         company_activities_router,

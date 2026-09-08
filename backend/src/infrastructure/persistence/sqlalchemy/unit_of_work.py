@@ -11,6 +11,7 @@ from .repositories.sqlalchemy_salary_range_repository import SqlAlchemySalaryRan
 from .repositories.sqlalchemy_company_membership_repository import SqlAlchemyCompanyMembershipRepository
 from .repositories.sqlalchemy_job_posting_repository import SqlAlchemyJobPostingRepository
 from .repositories.sqlalchemy_job_application_repository import SqlAlchemyJobApplicationRepository
+from .repositories.sqlalchemy_location_repository import SqlAlchemyLocationRepository
 from .repositories.sqlalchemy_jobs_search_repository import SQLAlchemyJobsSearchRepository
 from .repositories.sqlalchemy_applicant_profiles_repository import SQLAlchemyApplicantProfilesRepository
 from .repositories.sqlalchemy_attached_resume_repository import SQLAlchemyAttachedResumesRepository
@@ -39,6 +40,7 @@ class SqlAlchemyUnitOfWork(UnitOfWork):
         self.company_activities = SqlAlchemyCompanyActivityRepository(self.session)
         self.job_categories = SqlAlchemyJobCategoryRepository(self.session)
         self.salary_ranges = SqlAlchemySalaryRangeRepository(self.session)
+        self.locations = SqlAlchemyLocationRepository(self.session)
 
         return self
 
