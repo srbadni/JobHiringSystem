@@ -1,25 +1,29 @@
-import type { Metadata } from "next";
-import { Vazirmatn } from "next/font/google";
+import type {Metadata} from "next";
+import {Vazirmatn} from "next/font/google";
 import "./globals.css";
+import Header from "@/features/shared/components/main-header";
 
 const vazirmatn = Vazirmatn({
-  variable: "--font-vazirmatn",
-  subsets: ["arabic"],
+    variable: "--font-vazirmatn",
+    subsets: ["arabic"],
 });
 
 export const metadata: Metadata = {
-  title: "سامانه استخدام",
-  description: "سامانه کاریابی و استخدام",
+    title: "سامانه استخدام",
+    description: "سامانه کاریابی و استخدام",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
-  return (
-    <html
-      lang="fa"
-      dir="rtl"
-      className={`${vazirmatn.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
-    </html>
-  );
+export default function RootLayout({children}: LayoutProps<"/">) {
+    return (
+        <html
+            lang="fa"
+            dir="rtl"
+            className={`${vazirmatn.variable} h-full antialiased`}
+        >
+        <body className="min-h-full flex flex-col">
+        <Header />
+        {children}
+        </body>
+        </html>
+    );
 }
