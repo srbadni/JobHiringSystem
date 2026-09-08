@@ -1,26 +1,143 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f8fd;
+  --surface: #ffffff;
+
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+
+  --secondary: #0f766e;
+
+  --accent: #f59e0b;
+
+  --foreground: #0f172a;
+  --muted-foreground: #64748b;
+
+  --border: #e2e8f0;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+
+  --color-secondary: var(--secondary);
+
+  --color-accent: var(--accent);
+
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted: var(--muted-foreground);
+
+  --color-border: var(--border);
+
+  --font-sans: var(--font-vazirmatn);
+
+  /* Font Sizes */
+  --text-display: 52px;
+  --text-display--line-height: 1.2;
+
+  --text-h1-mobile: 43px;
+
+  --text-section-title: 27px;
+  --text-section-title-mobile: 21px;
+
+  --text-banner-title: 35px;
+  --text-banner-title-mobile: 29px;
+
+  --text-featured-job: 25px;
+  --text-featured-job-mobile: 23px;
+
+  --text-job-title: 17px;
+  --text-job-title-mobile: 18px;
+
+  --text-company-title: 17px;
+  --text-company-title-mobile: 15px;
+
+  --text-body-lg: 16px;
+  --text-body-lg-mobile: 15px;
+
+  --text-body: 14px;
+
+  --text-company-description: 12px;
+
+  --text-company-name: 14px;
+
+  --text-meta: 12px;
+
+  --text-salary: 14px;
+  --text-salary-mobile: 15px;
+
+  --text-button: 14px;
+
+  --text-input: 14px;
+  --text-input-mobile: 12px;
+
+  --text-nav: 14px;
+
+  --text-footer-link: 13px;
+
+  --text-footer-caption: 12px;
+
+  --text-brand: 29px;
+  --text-brand-mobile: 25px;
+
+
+  /* Line Heights */
+  --leading-base: 1.8;
+  --leading-readable: 2;
+  --leading-extra-readable: 2.05;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    font-size: 16px;
+  }
+
+  body {
+    font-family: var(--font-vazirmatn), Tahoma, sans-serif;
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  p {
+    font-size: 14px;
+    line-height: 2;
+  }
+
+  span {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: clamp(30px, 5vw, 52px);
+    line-height: 1.2;
+    font-weight: 700;
+  }
+
+  h2 {
+    font-size: 27px;
+    line-height: 1.4;
+    font-weight: 700;
+  }
+
+  h3 {
+    font-size: 20px;
+    line-height: 1.5;
+    font-weight: 600;
+  }
+
+  button,
+  input,
+  select {
+    font-size: 14px;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-vazirmatn), sans-serif;
 }
