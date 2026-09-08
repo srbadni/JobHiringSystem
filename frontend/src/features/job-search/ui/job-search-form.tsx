@@ -1,0 +1,198 @@
+"use client";
+
+import { useId, useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import classNames from "classnames";
+
+import { ProvinceSelect, provinceQueries } from "@/entities/location";
+import { JobCategorySelect, jobCategoryQueries } from "@/entities/job-category";
+
+import { Button } from "@/shared/ui/button";
+import { SearchIcon, LocationIcon, CategoryIcon } from "@/shared/ui/icons";
+
+import {
+    buildJobSearchHref,
+    emptyJobSearch,
+    type JobSearchValues,
+} from "../model/search-params";
+
+import { ReferenceStatus } from "./reference-status";
+
+
+export interface JobSearchFormProps {
+    className?: string;
+    initialValues?: JobSearchValues;
+}
+
+
+export function JobSearchForm({
+                                  className,
+                                  initialValues = emptyJobSearch,
+                              }: JobSearchFormProps) {
+    const router = useRouter();
+    const id = useId();
+
+    const [values, setValues] = useState(initialValues);
+
+    const provinces = useQuery(provinceQueries.all());
+    const categories = useQuery(jobCategoryQueries.all());
+
+
+    function submit(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+
+        router.push(buildJobSearchHref(values));
+    }
+
+
+    return (
+        <form
+            role="search"
+            aria-label="جستجوی فرصت‌های شغلی"
+            onSubmit={submit}
+            className={classNames(
+                "flex flex-col rounded-md border border-gray-300 bg-surface p-2",
+                className
+            )}
+        >
+            <div className="flex h-10 items-center gap-2 py-1">
+                <SearchIcon
+                    width={18}
+                    height={18}
+                    className="shrink-0 text-muted"
+                    aria-hidden="true"
+                />
+
+                <label
+                    className="sr-only"
+                    htmlFor={`${id}-keywords`}
+                >
+                    عنوان شغل، مهارت یا شرکت
+                </label>
+
+                <input
+                    id={`${id}-keywords`}
+                    name="keywords"
+                    value={values.keywords}
+                    onChange={(event) =>
+                        setValues({
+                            ...values,
+                            keywords: event.target.value,
+                        })
+                    }
+                    placeholder="عنوان شغل، مهارت یا شرکت"
+                    type="search"
+                    className="min-w-0 flex-1 rounded px-1 outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+                />
+            </div>
+
+
+            <div className="flex items-center gap-2 py-1">
+                <LocationIcon
+                    width={18}
+                    height={18}
+                    className="shrink-0 text-muted"
+                    aria-hidden="true"
+                />
+
+                <label
+                    className="sr-only"
+                    htmlFor={`${id}-province`}
+                >
+                    استان
+                </label>
+
+                <ProvinceSelect
+                    id={`${id}-province`}
+                    name="province_id"
+                    variant="plain"
+                    provinces={provinces.data ?? []}
+                    value={values.provinceId}
+                    onValueChange={(provinceId) =>
+                        setValues({
+                            ...values,
+                            provinceId,
+                        })
+                    }
+                    disabled={
+                        provinces.isPending ||
+                        (provinces.isError && !provinces.data)
+                    }
+                    aria-busy={provinces.isFetching}
+                    aria-describedby={`${id}-province-status`}
+                />
+            </div>
+
+
+            <ReferenceStatus
+                id={`${id}-province-status`}
+                label="استان‌ها"
+                pending={provinces.isPending}
+                failed={provinces.isError}
+                fetching={provinces.isFetching}
+                empty={
+                    provinces.isSuccess &&
+                    provinces.data.length === 0
+                }
+                onRetry={() => void provinces.refetch()}
+            />
+
+
+            <div className="flex items-center gap-2 py-1">
+                <CategoryIcon
+                    width={18}
+                    height={18}
+                    className="shrink-0 text-muted"
+                    aria-hidden="true"
+                />
+
+                <label
+                    className="sr-only"
+                    htmlFor={`${id}-category`}
+                >
+                    دسته‌بندی شغلی
+                </label>
+
+                <JobCategorySelect
+                    id={`${id}-category`}
+                    name="job_category_id"
+                    variant="plain"
+                    jobCategories={categories.data ?? []}
+                    value={values.jobCategoryId}
+                    onValueChange={(jobCategoryId) =>
+                        setValues({
+                            ...values,
+                            jobCategoryId,
+                        })
+                    }
+                    disabled={
+                        categories.isPending ||
+                        (categories.isError && !categories.data)
+                    }
+                    aria-busy={categories.isFetching}
+                    aria-describedby={`${id}-category-status`}
+                />
+            </div>
+
+
+            <ReferenceStatus
+                id={`${id}-category-status`}
+                label="دسته‌بندی‌ها"
+                pending={categories.isPending}
+                failed={categories.isError}
+                fetching={categories.isFetching}
+                empty={
+                    categories.isSuccess &&
+                    categories.data.length === 0
+                }
+                onRetry={() => void categories.refetch()}
+            />
+
+
+            <Button type="submit">
+                جستجو
+            </Button>
+        </form>
+    );
+}

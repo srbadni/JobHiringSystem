@@ -32,7 +32,7 @@ def create_job_categories_router(
     provide_update_handler: UpdateHandlerProvider,
     provide_delete_handler: DeleteHandlerProvider,
 ) -> APIRouter:
-    router = APIRouter(tags=["Admin - Job Categories"])
+    router = APIRouter(tags=["Job Categories"])
 
     @router.post("", status_code=status.HTTP_201_CREATED, response_model=JobCategoryRead)
     async def create_job_category(
