@@ -1,36 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# فرانت‌اند سامانه استخدام
 
-## Getting Started
+پروژهٔ Next.js App Router با TypeScript، Tailwind CSS v4، Axios و TanStack React Query v5، بازآرایی‌شده با FSD.
 
-First, run the development server:
+توضیح تصمیم‌ها، تحلیل ساختار قبلی و محل توسعهٔ قابلیت‌های بعدی در [راهنمای معماری](docs/architecture.fa.md) است. وضعیت بررسی‌ها در [گزارش اعتبارسنجی](docs/validation.fa.md) آمده است.
+
+## اجرا
+
+نسخه‌های وابستگی و package-lock.json فایل اولیه حفظ شده‌اند. برای اجرای تست‌های بدون وابستگی از Node.js 22.18 یا جدیدتر استفاده کنید؛ محیط بررسی Node.js 24 بوده است.
 
 ```bash
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+مقدار `NEXT_PUBLIC_BASE_URL` را در `.env.local` با آدرس واقعی API خود تنظیم کنید. این مقدار باید prefix واقعی بک‌اند را هم داشته باشد؛ نمونهٔ آن در `.env.example` آمده و آدرس قطعی بک‌اند شما نیست. بعد از تغییر env سرور توسعه را دوباره اجرا کنید. مقدار NEXT_PUBLIC در build داخل کد مرورگر قرار می‌گیرد.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+مسیرهای API موجود همان `/provinces` و `/job-categories` هستند. بک‌اند باید درخواست مرورگر از origin فرانت‌اند را با تنظیم CORS بپذیرد. فونت Vazirmatn همچنان از `next/font/google` استفاده می‌کند؛ دریافت فونت هنگام build نیاز به دسترسی شبکه دارد.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## بررسی
 
-## Learn More
+```bash
+npm test
+npm run lint
+npm run typecheck
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+دستور `npm run check` چهار مرحلهٔ lint، typecheck، test و build را به‌ترتیب اجرا می‌کند. `npm test` با نسخهٔ Node گفته‌شده به نصب پکیج‌ها نیاز ندارد؛ بقیهٔ دستورها به `npm ci` موفق نیاز دارند.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## وضعیت قابلیت‌ها
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- صفحهٔ اصلی، فرم جستجو، دریافت استان‌ها و دسته‌بندی‌ها و ساخت URL جستجو پیاده‌سازی شده‌اند.
+- مسیر `/jobs/search` اکنون صفحه دارد و فیلترهای URL را دوباره در فرم قرار می‌دهد. **این صفحه هنوز فهرست آگهی‌ها را دریافت یا نمایش نمی‌دهد**؛ فایل اولیه endpoint یا قرارداد پاسخ آن را نداشت.
+- هدر از نظر رفتار همان نمونهٔ اولیه است؛ ورود، ثبت‌نام و منوی تعاملی در پروژهٔ ارسالی پیاده‌سازی نشده بودند.
+- اتصال واقعی به بک‌اند و اجرای Next.js در محیط بررسی تأیید نشده‌اند؛ جزئیات را در گزارش اعتبارسنجی بخوانید.

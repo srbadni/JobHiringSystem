@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from bootstrap.company_activities_providers import (
     provide_create_company_activity_handler,
@@ -80,6 +81,15 @@ from presentation.http.exception_handlers import register_exception_handlers
 def create_app() -> FastAPI:
     app = FastAPI(title="Job Hiring System")
     register_exception_handlers(app)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[
+            "http://localhost:3000",
+        ],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
     company_activities_router = create_company_activities_router(
         provide_create_handler=provide_create_company_activity_handler,
@@ -158,7 +168,7 @@ def create_app() -> FastAPI:
 
     app.include_router(
         job_categories_router,
-        prefix="/api/v1/admin/job-categories",
+        prefix="/api/v1/job-categories",
     )
 
     app.include_router(
