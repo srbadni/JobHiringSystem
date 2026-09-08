@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="پشتیبانی و امور مشتریان">
+    <title>پشتیبانی و امور مشتریان</title>
+    <g fill="none" stroke="#0f766e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 26v-3a14 14 0 0 1 28 0v3"/><rect x="8" y="24" width="7" height="11" rx="3"/><rect x="33" y="24" width="7" height="11" rx="3"/><path d="M36 35v1a5 5 0 0 1-5 5h-4"/><circle cx="24" cy="41" r="2"/>
+    </g>
+</svg>

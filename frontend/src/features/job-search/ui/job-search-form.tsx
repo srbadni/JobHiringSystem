@@ -18,6 +18,7 @@ import {
 } from "../model/search-params";
 
 import { ReferenceStatus } from "./reference-status";
+import {useGlobalStatesContext} from "@/_app/providers/global-states-provider";
 
 
 export interface JobSearchFormProps {
@@ -36,7 +37,7 @@ export function JobSearchForm({
     const [values, setValues] = useState(initialValues);
 
     const provinces = useQuery(provinceQueries.all());
-    const categories = useQuery(jobCategoryQueries.all());
+    const {jobCategories: categories} = useGlobalStatesContext();
 
 
     function submit(event: FormEvent<HTMLFormElement>) {
@@ -158,7 +159,7 @@ export function JobSearchForm({
                     id={`${id}-category`}
                     name="job_category_id"
                     variant="plain"
-                    jobCategories={categories.data ?? []}
+                    jobCategories={categories}
                     value={values.jobCategoryId}
                     onValueChange={(jobCategoryId) =>
                         setValues({
@@ -166,28 +167,10 @@ export function JobSearchForm({
                             jobCategoryId,
                         })
                     }
-                    disabled={
-                        categories.isPending ||
-                        (categories.isError && !categories.data)
-                    }
-                    aria-busy={categories.isFetching}
+                    disabled={!categories.length}
                     aria-describedby={`${id}-category-status`}
                 />
             </div>
-
-
-            <ReferenceStatus
-                id={`${id}-category-status`}
-                label="دسته‌بندی‌ها"
-                pending={categories.isPending}
-                failed={categories.isError}
-                fetching={categories.isFetching}
-                empty={
-                    categories.isSuccess &&
-                    categories.data.length === 0
-                }
-                onRetry={() => void categories.refetch()}
-            />
 
 
             <Button type="submit">
