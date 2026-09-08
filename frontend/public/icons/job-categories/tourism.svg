@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="گردشگری">
+    <title>گردشگری</title>
+    <g fill="none" stroke="#0f766e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="10" y="16" width="28" height="25" rx="4"/><path d="M19 16v-5h10v5M10 25h28M18 22v6M30 22v6"/><path d="m30 10 7-4-2 7"/>
+    </g>
+</svg>

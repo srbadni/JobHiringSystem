@@ -1,14 +1,14 @@
-import JobCategorySection from "@/widgets/job-categories-section/ui/job-category-section";
+import JobCategorySection from "@/widgets/job-categories-selection-section/ui/job-category-section";
 import HomeSearchHero from "@/widgets/home-search-hero/home-search-hero";
 
 export function HomePage() {
     return (
         <main>
-            <section className="py-4 px-3">
+            <section className="py-4 px-4">
                 <HomeSearchHero />
             </section>
             <section className="pt-6">
-                <JobCategorySection classnames="px-2"/>
+                <JobCategorySection classnames="px-4"/>
             </section>
         </main>
     );
