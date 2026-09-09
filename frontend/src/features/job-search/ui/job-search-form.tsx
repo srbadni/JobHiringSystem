@@ -126,20 +126,6 @@ export function JobSearchForm({
             </div>
 
 
-            <ReferenceStatus
-                id={`${id}-province-status`}
-                label="استان‌ها"
-                pending={provinces.isPending}
-                failed={provinces.isError}
-                fetching={provinces.isFetching}
-                empty={
-                    provinces.isSuccess &&
-                    provinces.data.length === 0
-                }
-                onRetry={() => void provinces.refetch()}
-            />
-
-
             <div className="flex items-center gap-2 py-1">
                 <CategoryIcon
                     width={18}
