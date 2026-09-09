@@ -10,6 +10,8 @@ from domain.job_posting.enum import WorkMode, RelevantWorkExperience
 
 @dataclass(slots=True)
 class GetJobsQueries:
+    page_size: int
+    page_index: int
     keywords: str | None = None
     province_ids: list[UUID] | None = None
     job_category_ids: list[UUID] | None = None

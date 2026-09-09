@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import UUID
 
 from pydantic import BaseModel, Field
@@ -41,6 +42,7 @@ class JobPostingRead(BaseModel):
     minimum_education: MinimumEducationLevel
     gender: Gender
     military_status: MilitaryServiceStatus
+    created_at: datetime
 
 
 class JobPostingUpdate(JobPostingCreate):
