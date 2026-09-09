@@ -34,6 +34,7 @@ class SqlAlchemyJobPostingRepository(JobPostingRepository):
             gender=model.gender,
             military_status=model.military_status,
             id=model.id,
+            created_at=model.created_at,
         )
 
     async def list(self, company_id: UUID) -> list[JobPosting]:

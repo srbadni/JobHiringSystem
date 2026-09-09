@@ -17,4 +17,6 @@ class GetJobsQueryHandler:
                 work_modes=query.work_modes,
                 work_experiences=query.work_experiences,
                 salary_range_ids=query.salary_range_ids,
+                page_size=query.page_size,
+                page_index=query.page_index,
             ))

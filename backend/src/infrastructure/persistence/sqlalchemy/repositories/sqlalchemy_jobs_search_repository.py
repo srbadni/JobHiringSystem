@@ -90,6 +90,8 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
                 JobPostingORMModel.city_id == CityORMModel.id,
             )
             .where(*filters)
+            .offset((queries.page_index - 1) * queries.page_size)
+            .limit(queries.page_size)
         )
 
         result = await self.session.execute(stmt)

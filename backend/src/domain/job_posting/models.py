@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from datetime import datetime
 from uuid import UUID, uuid4
 
 from .enum import EmploymentType, WorkMode, JobPostingStatus, RelevantWorkExperience, Gender, MinimumEducationLevel, \
@@ -24,4 +25,5 @@ class JobPosting:
     minimum_education: MinimumEducationLevel
     gender: Gender
     military_status: MilitaryServiceStatus
+    created_at: datetime | None = None
     id: UUID = field(default_factory=uuid4)

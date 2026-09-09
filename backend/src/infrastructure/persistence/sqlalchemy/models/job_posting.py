@@ -10,7 +10,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from infrastructure.persistence.sqlalchemy.base import Base
+from infrastructure.persistence.sqlalchemy.base import Base, TimestampMixin
 
 from domain.job_posting.enum import (
     EmploymentType,
@@ -30,7 +30,7 @@ if TYPE_CHECKING:
     from .job_application import JobApplication
 
 
-class JobPosting(Base):
+class JobPosting(Base, TimestampMixin):
     __tablename__ = "job_postings"
 
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
