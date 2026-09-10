@@ -1,10 +1,11 @@
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.elements import ColumnElement
 
+from application.common.dto.pagination import PaginatedResult
 from application.jobs_search.dto.job_details import JobDetails
 from application.jobs_search.dto.company_details import CompanyDetails
-from application.jobs_search.dto.job_search_result import JobSearchResult
+from application.jobs_search.dto.job_search_result import SearchJob
 from application.jobs_search.ports.jobs_search_repository import (
     JobsSearchRepository,
     GetJobsQueries,
@@ -25,7 +26,7 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def get_jobs(self, queries: GetJobsQueries) -> list[JobSearchResult]:
+    async def get_jobs(self, queries: GetJobsQueries) -> PaginatedResult[SearchJob]:
         filters: list[ColumnElement[bool]] = []
 
         if queries.keywords:
@@ -90,6 +91,14 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
                 JobPostingORMModel.city_id == CityORMModel.id,
             )
             .where(*filters)
+        )
+
+        count_stmt = select(func.count()).select_from(stmt.subquery())
+        total: int = await self.session.scalar(count_stmt) or 0
+
+        stmt = (
+            stmt
+            .order_by(JobPostingORMModel.id)
             .offset((queries.page_index - 1) * queries.page_size)
             .limit(queries.page_size)
         )
@@ -97,26 +106,33 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
         result = await self.session.execute(stmt)
         rows = result.mappings().all()
 
-        return [
-            JobSearchResult(
-                id=row.id,
-                company_id=row.company_id,
-                company_title=row.company_title,
-                company_english_title=row.company_english_title,
-                company_logo=row.company_logo,
-                job_category_title=row.job_category_title,
-                province_title=row.province_title,
-                city_title=row.city_title,
-                salary_range_title=row.salary_range_title,
-                job_title=row.job_title,
-            )
-            for row in rows
-        ]
+        paginated_result = PaginatedResult(
+            items=[
+                SearchJob(
+                    id=row.id,
+                    company_id=row.company_id,
+                    company_title=row.company_title,
+                    company_english_title=row.company_english_title,
+                    company_logo=row.company_logo,
+                    job_category_title=row.job_category_title,
+                    province_title=row.province_title,
+                    city_title=row.city_title,
+                    salary_range_title=row.salary_range_title,
+                    job_title=row.job_title,
+                )
+                for row in rows
+            ],
+            total=total if total is not None else 0,
+            page_index=queries.page_index,
+            page_size=queries.page_size,
+        )
+
+        return paginated_result
 
     async def get_company_jobs(
             self,
             queries: GetCompanyJobsQueries,
-    ) -> list[JobSearchResult]:
+    ) -> list[SearchJob]:
 
         stmt = (
             select(
@@ -158,7 +174,7 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
         rows = result.mappings().all()
 
         return [
-            JobSearchResult(
+            SearchJob(
                 id=row.id,
                 company_id=row.company_id,
                 company_title=row.company_title,

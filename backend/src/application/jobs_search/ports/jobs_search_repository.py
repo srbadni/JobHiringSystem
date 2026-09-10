@@ -2,9 +2,10 @@ from uuid import UUID
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
+from application.common.dto.pagination import PaginatedResult
 from application.jobs_search.dto.job_details import JobDetails
 from application.jobs_search.dto.company_details import CompanyDetails
-from application.jobs_search.dto.job_search_result import JobSearchResult
+from application.jobs_search.dto.job_search_result import SearchJob
 from domain.job_posting.enum import WorkMode, RelevantWorkExperience
 
 
@@ -36,11 +37,11 @@ class GetJobDetailsQueries:
 class JobsSearchRepository(ABC):
 
     @abstractmethod
-    async def get_jobs(self, queries: GetJobsQueries) -> list[JobSearchResult]:
+    async def get_jobs(self, queries: GetJobsQueries) -> PaginatedResult[SearchJob]:
         pass
 
     @abstractmethod
-    async def get_company_jobs(self, queries: GetCompanyJobsQueries) -> list[JobSearchResult]:
+    async def get_company_jobs(self, queries: GetCompanyJobsQueries) -> list[SearchJob]:
         pass
 
     @abstractmethod

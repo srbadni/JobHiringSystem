@@ -1,7 +1,7 @@
 import {FC, Fragment} from "react";
 import {Typography} from "@/shared/ui/typography";
-import {JobSearchForm} from "@/features/job-search";
-import Tag from "@/shared/ui/tag/tag";
+import {JobSearchForm} from "@/features/job-search-form";
+import SearchTag from "@/shared/ui/tag/search-tag";
 
 interface HomeSearchHeroProps {
 
@@ -23,9 +23,9 @@ const HomeSearchHero:FC<HomeSearchHeroProps> = ({}) => {
                     جست و جو های محبوب:
                 </Typography>
                 <div className="flex items-center">
-                    <Tag>
+                    <SearchTag>
                         خوب
-                    </Tag>
+                    </SearchTag>
                 </div>
             </div>
         </Fragment>

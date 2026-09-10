@@ -11,7 +11,7 @@ from .schemas import JobSearchRead
 def create_jobs_router(provide_handler: Callable[[], GetJobsQueryHandler]) -> APIRouter:
     router = APIRouter(tags=["Applicant - Jobs"])
 
-    @router.get("/search", response_model=list[JobSearchRead])
+    @router.get("/search")
     async def search(  # pyright: ignore[reportUnusedFunction]
             handler: Annotated[GetJobsQueryHandler, Depends(provide_handler)], keywords: str | None = None,
             province_ids: list[UUID] | None = Query(default=None),

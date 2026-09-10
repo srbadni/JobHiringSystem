@@ -3,7 +3,7 @@ from uuid import UUID
 
 
 @dataclass(frozen=True)
-class JobSearchResult:
+class SearchJob:
     id: UUID
     company_id: UUID
     company_title: str
