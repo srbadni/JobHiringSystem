@@ -1,4 +1,4 @@
-from sqlalchemy import select, func
+from sqlalchemy import select, func, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.elements import ColumnElement
 
@@ -11,6 +11,7 @@ from application.jobs_search.ports.jobs_search_repository import (
     GetJobsQueries,
     GetCompanyJobsQueries, GetCompanyDetailsQueries, GetJobDetailsQueries,
 )
+from application.jobs_search.query.get_jobs import SortType
 from ..models.job_posting import JobPosting as JobPostingORMModel
 from ..models.company import Company as CompanyORMModel
 from ..models.job_categories import JobCategory as JobCategoryORMModel
@@ -67,7 +68,7 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
                 CompanyORMModel.logo_path.label("company_logo"),
                 JobCategoryORMModel.title.label("job_category_title"),
                 ProvinceORMModel.name.label("province_title"),
-                SalaryRangeORMModel.title.label("salary_range_title"),
+                SalaryRangeORMModel.title.label("salary_title"),
                 CityORMModel.name.label("city_title"),
             )
             .join(
@@ -96,9 +97,16 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
         count_stmt = select(func.count()).select_from(stmt.subquery())
         total: int = await self.session.scalar(count_stmt) or 0
 
+        if queries.sort_type == SortType.MOST_RECENT:
+            order_by = desc(JobPostingORMModel.created_at)
+        elif queries.sort_type == SortType.SALARY_DESC:
+            order_by = desc(SalaryRangeORMModel.min_salary)
+        else:
+            order_by = JobPostingORMModel.id
+
         stmt = (
             stmt
-            .order_by(JobPostingORMModel.id)
+            .order_by(order_by)
             .offset((queries.page_index - 1) * queries.page_size)
             .limit(queries.page_size)
         )
@@ -117,8 +125,9 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
                     job_category_title=row.job_category_title,
                     province_title=row.province_title,
                     city_title=row.city_title,
-                    salary_range_title=row.salary_range_title,
                     job_title=row.job_title,
+                    created_at=row.created_at,
+                    salary_title=row.salary_title,
                 )
                 for row in rows
             ],
@@ -142,7 +151,7 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
                 CompanyORMModel.logo_path.label("company_logo"),
                 JobCategoryORMModel.title.label("job_category_title"),
                 ProvinceORMModel.name.label("province_title"),
-                SalaryRangeORMModel.title.label("salary_range_title"),
+                SalaryRangeORMModel.title.label("salary_title"),
                 CityORMModel.name.label("city_title"),
             )
             .join(
@@ -183,7 +192,7 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
                 job_category_title=row.job_category_title,
                 province_title=row.province_title,
                 city_title=row.city_title,
-                salary_range_title=row.salary_range_title,
+                salary_title=row.salary_title,
                 job_title=row.job_title,
             )
             for row in rows

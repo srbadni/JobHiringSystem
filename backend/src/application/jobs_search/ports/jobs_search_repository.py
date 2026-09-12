@@ -6,6 +6,7 @@ from application.common.dto.pagination import PaginatedResult
 from application.jobs_search.dto.job_details import JobDetails
 from application.jobs_search.dto.company_details import CompanyDetails
 from application.jobs_search.dto.job_search_result import SearchJob
+from application.jobs_search.query.get_jobs import SortType
 from domain.job_posting.enum import WorkMode, RelevantWorkExperience
 
 
@@ -13,6 +14,7 @@ from domain.job_posting.enum import WorkMode, RelevantWorkExperience
 class GetJobsQueries:
     page_size: int
     page_index: int
+    sort_type: SortType | None
     keywords: str | None = None
     province_ids: list[UUID] | None = None
     job_category_ids: list[UUID] | None = None

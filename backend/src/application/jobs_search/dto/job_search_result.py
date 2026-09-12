@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 from uuid import UUID
 
 
@@ -16,6 +17,7 @@ class SearchJob:
 
     city_title: str
 
-    salary_range_title: str
+    salary_title: str
 
     job_title: str
+    created_at: datetime
