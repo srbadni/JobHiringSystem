@@ -57,7 +57,7 @@ const JobSearchResult:FC<JobSearchResultProps> = ({}) => {
                         )
                     }
                 </Typography>
-                <Button className="flex gap-2 bg-white ms-auto border border-gray-200">
+                <Button className="flex gap-2 bg-white !py-1 ms-auto border border-gray-200">
                     <FilterIcon width={16} height={16} />
                     <Typography className="!font-bold" variant="small">فیلتر ها</Typography>
                 </Button>
