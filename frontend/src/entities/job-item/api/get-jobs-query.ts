@@ -12,6 +12,7 @@ export const getJobs = async (pageParam: number | undefined, queries: JobQueries
             province_ids: queries.province_ids,
             job_category_ids: queries.job_category_ids,
             keywords: queries.keywords,
+            sort_type: queries.sort_type,
         },
         paramsSerializer: {
             indexes: null

@@ -1,3 +1,5 @@
+import {SortType} from "@/features/job-search-result/model/type";
+
 export interface JobItem {
     id: string;
     company_id: string;
@@ -40,4 +42,5 @@ export type JobQueries = {
     keywords: string | null
     province_ids: string[] | null
     job_category_ids: string[] | null
+    sort_type: SortType | undefined
 }

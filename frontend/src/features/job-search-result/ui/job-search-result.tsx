@@ -1,30 +1,36 @@
 "use client"
-import {FC, Fragment} from "react";
+import {ChangeEvent, FC, Fragment} from "react";
 import {Typography} from "@/shared/ui/typography";
 import {Button} from "@/shared/ui/button";
 import {FilterIcon} from "@/shared/ui/icons/FilterIcon";
 import JobCardItem from "@/entities/job-item/ui/job-card-item";
-import {InfiniteData, useInfiniteQuery, useQuery} from "@tanstack/react-query";
+import {InfiniteData, useInfiniteQuery} from "@tanstack/react-query";
 import {getJobs} from "@/entities/job-item/api/get-jobs-query";
 import {PaginatedResponse} from "@/shared/api/type";
 import {JobItem} from "@/entities/job-item/model/job-item";
-import {useSearchParams} from "next/navigation";
+import {usePathname, useRouter, useSearchParams} from "next/navigation";
+import {Select} from "@/shared/ui/select";
+import {SortType} from "@/features/job-search-result/model/type";
 
 interface JobSearchResultProps {
 
 }
 
 const JobSearchResult:FC<JobSearchResultProps> = ({}) => {
+    const router = useRouter();
     const searchParams = useSearchParams()
+    const pathname = usePathname()
     const keywords = searchParams.get("keywords");
     const province_ids = searchParams.get("province_ids")?.split("|") ?? null;
     const job_category_ids = searchParams.get("job_category_ids")?.split("|") ?? null;
+    const sort_type = (searchParams.get("sort_type") ?? undefined) as SortType | undefined;
 
     const {data: jobResults, isPending, hasNextPage, fetchNextPage} = useInfiniteQuery<PaginatedResponse<JobItem>, any, InfiniteData<PaginatedResponse<JobItem>>, any, number>({
         queryKey: ["jobs", {
             keywords,
             province_ids,
             job_category_ids,
+            sort_type,
         }],
         initialPageParam: 1,
         getNextPageParam: (lastPage) => {
@@ -38,6 +44,7 @@ const JobSearchResult:FC<JobSearchResultProps> = ({}) => {
             keywords,
             province_ids,
             job_category_ids,
+            sort_type,
         })
     })
 
@@ -46,6 +53,18 @@ const JobSearchResult:FC<JobSearchResultProps> = ({}) => {
     const mergePagesJobs = jobResults?.pages.flatMap(p => (
         p.items
     ))
+
+    const handleSelect = (event: ChangeEvent<HTMLSelectElement, HTMLSelectElement>) => {
+        const params = new URLSearchParams(searchParams.toString())
+        if (event.target.value === SortType.RELEVANCE) {
+            if (params.has("sort_type")) {
+                params.delete("sort_type")
+            }
+        } else {
+            params.set("sort_type", event.target.value)
+        }
+        router.push(pathname + "?" + params.toString())
+    }
 
     return (
         <div className="flex flex-col gap-1">
@@ -61,6 +80,17 @@ const JobSearchResult:FC<JobSearchResultProps> = ({}) => {
                     <FilterIcon width={16} height={16} />
                     <Typography className="!font-bold" variant="small">فیلتر ها</Typography>
                 </Button>
+                <Select value={sort_type ?? SortType.RELEVANCE} onChange={(event) => handleSelect(event)} className="flex gap-2 bg-white !w-fit !py-1 !rounded-md !h-auto border border-gray-200">
+                    <option value={SortType.RELEVANCE}>
+                        <Typography className="!font-bold" variant="caption">مرتبط‌ترین</Typography>
+                    </option>
+                    <option value={SortType.MOST_RECENT}>
+                        <Typography className="!font-bold" variant="caption">جدیدترین</Typography>
+                    </option>
+                    <option value={SortType.SALARY_DESC}>
+                        <Typography className="!font-bold" variant="caption">بیشترین حقوق</Typography>
+                    </option>
+                </Select>
             </div>
             <div className="flex flex-col gap-3">
                 {
