@@ -128,6 +128,8 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
                     job_title=row.job_title,
                     created_at=row.created_at,
                     salary_title=row.salary_title,
+                    employment_type=row.employment_type,
+                    work_mode=row.work_mode,
                 )
                 for row in rows
             ],
@@ -194,6 +196,9 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
                 city_title=row.city_title,
                 salary_title=row.salary_title,
                 job_title=row.job_title,
+                employment_type=row.employment_type,
+                created_at=row.created_at,
+                work_mode=row.work_mode,
             )
             for row in rows
         ]

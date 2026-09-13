@@ -14,16 +14,16 @@ function first(value: string | string[] | undefined): string {
 export function parseJobSearchParams(params: JobSearchParams): JobSearchValues {
   return {
     keywords: first(params.keywords),
-    provinceId: first(params.province_id),
-    jobCategoryId: first(params.job_category_id),
+    provinceId: first(params.province_ids),
+    jobCategoryId: first(params.job_category_ids),
   };
 }
 
 export function buildJobSearchHref(values: JobSearchValues): string {
   const params = new URLSearchParams();
   if (values.keywords.trim()) params.set("keywords", values.keywords.trim());
-  if (values.provinceId.trim()) params.set("province_id", values.provinceId.trim());
-  if (values.jobCategoryId.trim()) params.set("job_category_id", values.jobCategoryId.trim());
+  if (values.provinceId.trim()) params.set("province_ids", values.provinceId.trim());
+  if (values.jobCategoryId.trim()) params.set("job_category_ids", values.jobCategoryId.trim());
   const query = params.toString();
   return query ? `/jobs/search?${query}` : "/jobs/search";
 }

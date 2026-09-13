@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 from uuid import UUID
+from domain.job_posting.enum import EmploymentType, WorkMode
 
 
 @dataclass(frozen=True)
@@ -18,6 +19,8 @@ class SearchJob:
     city_title: str
 
     salary_title: str
+    employment_type: EmploymentType
+    work_mode: WorkMode
 
     job_title: str
     created_at: datetime

@@ -13,7 +13,8 @@ def create_jobs_router(provide_handler: Callable[[], GetJobsQueryHandler]) -> AP
 
     @router.get("/search")
     async def search(  # pyright: ignore[reportUnusedFunction]
-            handler: Annotated[GetJobsQueryHandler, Depends(provide_handler)], keywords: str | None = None,
+            handler: Annotated[GetJobsQueryHandler, Depends(provide_handler)],
+            keywords: str | None = None,
             province_ids: list[UUID] | None = Query(default=None),
             job_category_ids: list[UUID] | None = Query(default=None),
             work_modes: list[WorkMode] | None = Query(default=None),
