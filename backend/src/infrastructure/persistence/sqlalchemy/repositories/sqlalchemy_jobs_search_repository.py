@@ -2,10 +2,10 @@ from sqlalchemy import select, func, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.elements import ColumnElement
 
-from application.common.dto.pagination import PaginatedResult
+from application.common.dto.pagination import Pagination
 from application.jobs_search.dto.job_details import JobDetails
 from application.jobs_search.dto.company_details import CompanyDetails
-from application.jobs_search.dto.job_search_result import SearchJob
+from application.jobs_search.dto.job_search_result import SearchJob, JobResults
 from application.jobs_search.ports.jobs_search_repository import (
     JobsSearchRepository,
     GetJobsQueries,
@@ -27,7 +27,7 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def get_jobs(self, queries: GetJobsQueries) -> PaginatedResult[SearchJob]:
+    async def get_jobs(self, queries: GetJobsQueries) -> JobResults:
         filters: list[ColumnElement[bool]] = []
 
         if queries.keywords:
@@ -114,8 +114,8 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
         result = await self.session.execute(stmt)
         rows = result.mappings().all()
 
-        paginated_result = PaginatedResult(
-            items=[
+        paginated_result = JobResults(
+            jobs=[
                 SearchJob(
                     id=row.id,
                     company_id=row.company_id,
@@ -133,9 +133,11 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
                 )
                 for row in rows
             ],
-            total=total if total is not None else 0,
-            page_index=queries.page_index,
-            page_size=queries.page_size,
+            pagination=Pagination(
+                total=total if total is not None else 0,
+                page_index=queries.page_index,
+                page_size=queries.page_size,
+            ),
         )
 
         return paginated_result
