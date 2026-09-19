@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 from uuid import UUID
 
 from domain.company.enums import EmployeeCount
@@ -28,3 +29,4 @@ class JobDetails:
     military_status: MilitaryServiceStatus
     post_notifications: bool
     status: JobPostingStatus
+    created_at: datetime

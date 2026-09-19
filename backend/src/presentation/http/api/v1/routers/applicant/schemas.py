@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import UUID
 from pydantic import BaseModel
 from domain.company.enums import EmployeeCount
@@ -45,6 +46,7 @@ class JobDetailsRead(BaseModel):
     military_status: MilitaryServiceStatus
     post_notifications: bool
     status: JobPostingStatus
+    created_at: datetime
 
 class JobApplicationCreate(BaseModel):
     folder_id: UUID | None = None
