@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Dict
+from typing import Any
 from uuid import UUID
 
 from ...common.dto.pagination import Pagination
@@ -10,7 +10,7 @@ from domain.job_posting.enum import EmploymentType, WorkMode
 class JobResults:
     jobs: list[SearchJob]
     pagination: Pagination
-    facets: Dict | None = None
+    facets: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True)
