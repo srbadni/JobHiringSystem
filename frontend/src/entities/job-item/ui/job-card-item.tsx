@@ -12,10 +12,11 @@ import {timeAgo} from "@/shared/utils/datetime";
 import SearchTag from "@/shared/ui/tag/search-tag";
 
 interface JobCardItemProps {
-    job: JobItem
+    job: JobItem,
+    handleClick: (j: JobItem) => void,
 }
 
-const JobCardItem:FC<JobCardItemProps> = ({job}) => {
+const JobCardItem:FC<JobCardItemProps> = ({job, handleClick}) => {
     return (
         <div className="bg-white border border-gray-200 rounded-lg p-3 flex flex-col">
             <div className="pb-3 border-b border-gray-200">
@@ -57,7 +58,7 @@ const JobCardItem:FC<JobCardItemProps> = ({job}) => {
                         {timeAgo(job.created_at)}
                     </Typography>
                 </div>
-                <PrimaryButton>
+                <PrimaryButton onClick={() => handleClick(job)}>
                     <Typography className="text-white !font-bold" variant="small">
                         ارسال رزومه
                     </Typography>

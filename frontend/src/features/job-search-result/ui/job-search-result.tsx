@@ -9,9 +9,10 @@ import {getJobs} from "@/entities/job-item/api/get-jobs-query";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import {Select} from "@/shared/ui/select";
 import {JobSearchResultResponse, SortType} from "@/features/job-search-result/model/type";
+import {JobItem} from "@/entities/job-item/model/job-item";
 
 interface JobSearchResultProps {
-
+    //
 }
 
 const JobSearchResult:FC<JobSearchResultProps> = ({}) => {
@@ -64,6 +65,10 @@ const JobSearchResult:FC<JobSearchResultProps> = ({}) => {
         router.push(pathname + "?" + params.toString())
     }
 
+    const handleJobClick = (j: JobItem) => {
+        router.push(`/jobs/${j.company_english_title}/${j.id}`)
+    }
+
     return (
         <div className="flex flex-col gap-1">
             <div className="flex gap-2 items-end border-b border-b-gray-200 pb-5 mb-4">
@@ -95,7 +100,7 @@ const JobSearchResult:FC<JobSearchResultProps> = ({}) => {
                     isPending ? <span>loading ...</span> : (
                         mergePagesJobs?.map((j, index) => {
                             return <Fragment key={j.id}>
-                                <JobCardItem job={j} />
+                                <JobCardItem handleClick={handleJobClick} job={j} />
                                 {
                                     ((mergePagesJobs?.length  - 1) === index && hasNextPage) && (
                                         <Button onClick={() => fetchNextPage()} className="bg-indigo-50">
