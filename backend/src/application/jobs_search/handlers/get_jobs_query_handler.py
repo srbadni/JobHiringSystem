@@ -1,15 +1,14 @@
-from application.common.dto.pagination import PaginatedResult
 from application.common.ports.unit_of_work import UnitOfWork
 from application.jobs_search.ports.jobs_search_repository import GetJobsQueries
 from application.jobs_search.query.get_jobs import GetJobsQuery
-from application.jobs_search.dto.job_search_result import SearchJob
+from application.jobs_search.dto.job_search_result import SearchJob, JobResults
 
 
 class GetJobsQueryHandler:
     def __init__(self, uow: UnitOfWork) -> None:
         self.uow = uow
 
-    async def handle(self, query: GetJobsQuery) -> PaginatedResult[SearchJob]:
+    async def handle(self, query: GetJobsQuery) -> JobResults:
         async with self.uow:
             return await self.uow.jobs_search.get_jobs(GetJobsQueries(
                 keywords=query.keywords,
