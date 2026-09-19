@@ -235,6 +235,7 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
             military_status=details.military_status,
             post_notifications=details.post_notifications,
             status=details.status,
+            created_at=details.created_at,
         )
 
     async def get_company_details(self, queries: GetCompanyDetailsQueries) -> CompanyDetails:
