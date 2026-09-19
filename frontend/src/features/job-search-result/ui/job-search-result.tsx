@@ -100,7 +100,24 @@ const JobSearchResult:FC<JobSearchResultProps> = ({}) => {
                     isPending ? <span>loading ...</span> : (
                         mergePagesJobs?.map((j, index) => {
                             return <Fragment key={j.id}>
-                                <JobCardItem handleClick={handleJobClick} job={j} />
+                                <JobCardItem.Root job={j} onApply={handleJobClick}>
+                                    <JobCardItem.Header>
+                                        <JobCardItem.Overview>
+                                            <JobCardItem.CompanyLogo />
+                                            <JobCardItem.Information>
+                                                <JobCardItem.Title />
+                                                <JobCardItem.CompanyName />
+                                                <JobCardItem.JobDetails />
+                                            </JobCardItem.Information>
+                                            <JobCardItem.Bookmark />
+                                        </JobCardItem.Overview>
+                                        <JobCardItem.Tags />
+                                    </JobCardItem.Header>
+                                    <JobCardItem.Footer>
+                                        <JobCardItem.Salary />
+                                        <JobCardItem.ApplyButton />
+                                    </JobCardItem.Footer>
+                                </JobCardItem.Root>
                                 {
                                     ((mergePagesJobs?.length  - 1) === index && hasNextPage) && (
                                         <Button onClick={() => fetchNextPage()} className="bg-indigo-50">
