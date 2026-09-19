@@ -1,19 +1,20 @@
-import type { Metadata } from "next";
-import { JobSearchForm, buildJobSearchHref, parseJobSearchParams, type JobSearchParams } from "@/features/job-search";
-import { Typography } from "@/shared/ui/typography";
+import type {Metadata} from "next";
+import {parseJobSearchParams, type JobSearchParams} from "@/features/job-search-form";
+import ResultSearchHero from "@/widgets/result-search-hero/ui/result-search-hero";
+import JobSearchResult from "@/features/job-search-result/ui/job-search-result";
 
-export const metadata: Metadata = { title: "جستجوی شغل | سامانه استخدام" };
+export const metadata: Metadata = {title: "جستجوی شغل | سامانه استخدام"};
 
-export async function JobSearchPage({ searchParams }: { searchParams: Promise<JobSearchParams> }) {
-  const values = parseJobSearchParams(await searchParams);
-  return (
-    <main className="px-3 py-4">
-      <Typography as="h1" variant="h2">جستجوی فرصت‌های شغلی</Typography>
-      <JobSearchForm key={buildJobSearchHref(values)} initialValues={values} className="mt-3" />
-      {/* No jobs endpoint or response contract was included in the source project. */}
-      <Typography tone="muted" className="mt-5">
-        فهرست فرصت‌های شغلی به‌زودی در دسترس قرار می‌گیرد.
-      </Typography>
-    </main>
-  );
+export async function JobSearchPage({searchParams}: { searchParams: Promise<JobSearchParams> }) {
+    const values = parseJobSearchParams(await searchParams);
+    return (
+        <main className="px-4 py-4">
+            <section>
+                <ResultSearchHero searchParams={values}/>
+            </section>
+            <section className="pt-8">
+                <JobSearchResult/>
+            </section>
+        </main>
+    );
 }

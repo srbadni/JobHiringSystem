@@ -8,7 +8,7 @@ import classNames from "classnames";
 import { ProvinceSelect, provinceQueries } from "@/entities/location";
 import { JobCategorySelect, jobCategoryQueries } from "@/entities/job-category";
 
-import { Button } from "@/shared/ui/button";
+import { PrimaryButton } from "@/shared/ui/button";
 import { SearchIcon, LocationIcon, CategoryIcon } from "@/shared/ui/icons";
 
 import {
@@ -126,20 +126,6 @@ export function JobSearchForm({
             </div>
 
 
-            <ReferenceStatus
-                id={`${id}-province-status`}
-                label="استان‌ها"
-                pending={provinces.isPending}
-                failed={provinces.isError}
-                fetching={provinces.isFetching}
-                empty={
-                    provinces.isSuccess &&
-                    provinces.data.length === 0
-                }
-                onRetry={() => void provinces.refetch()}
-            />
-
-
             <div className="flex items-center gap-2 py-1">
                 <CategoryIcon
                     width={18}
@@ -173,9 +159,9 @@ export function JobSearchForm({
             </div>
 
 
-            <Button type="submit">
+            <PrimaryButton type="submit">
                 جستجو
-            </Button>
+            </PrimaryButton>
         </form>
     );
 }

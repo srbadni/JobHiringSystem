@@ -3,7 +3,7 @@ from typing import Annotated
 from uuid import UUID
 from fastapi import APIRouter, Depends, Query
 from application.jobs_search.handlers.get_jobs_query_handler import GetJobsQueryHandler
-from application.jobs_search.query.get_jobs import GetJobsQuery
+from application.jobs_search.query.get_jobs import GetJobsQuery, SortType
 from domain.job_posting.enum import RelevantWorkExperience, WorkMode
 from .schemas import JobSearchRead
 
@@ -11,9 +11,10 @@ from .schemas import JobSearchRead
 def create_jobs_router(provide_handler: Callable[[], GetJobsQueryHandler]) -> APIRouter:
     router = APIRouter(tags=["Applicant - Jobs"])
 
-    @router.get("/search", response_model=list[JobSearchRead])
+    @router.get("/search")
     async def search(  # pyright: ignore[reportUnusedFunction]
-            handler: Annotated[GetJobsQueryHandler, Depends(provide_handler)], keywords: str | None = None,
+            handler: Annotated[GetJobsQueryHandler, Depends(provide_handler)],
+            keywords: str | None = None,
             province_ids: list[UUID] | None = Query(default=None),
             job_category_ids: list[UUID] | None = Query(default=None),
             work_modes: list[WorkMode] | None = Query(default=None),
@@ -21,6 +22,7 @@ def create_jobs_router(provide_handler: Callable[[], GetJobsQueryHandler]) -> AP
             salary_range_ids: list[UUID] | None = Query(default=None),
             page_size: int = Query(),
             page_index: int = Query(),
+            sort_type: SortType | None = Query(default=SortType.MOST_RECENT),
     ):
         return await handler.handle(
             GetJobsQuery(
@@ -32,6 +34,7 @@ def create_jobs_router(provide_handler: Callable[[], GetJobsQueryHandler]) -> AP
                 salary_range_ids=salary_range_ids,
                 page_size=page_size,
                 page_index=page_index,
+                sort_type=sort_type,
             )
         )
 

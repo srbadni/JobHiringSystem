@@ -1,15 +1,18 @@
-from sqlalchemy import select
+from sqlalchemy import select, func, desc
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 from sqlalchemy.sql.elements import ColumnElement
 
+from application.common.dto.pagination import Pagination
 from application.jobs_search.dto.job_details import JobDetails
 from application.jobs_search.dto.company_details import CompanyDetails
-from application.jobs_search.dto.job_search_result import JobSearchResult
+from application.jobs_search.dto.job_search_result import SearchJob, JobResults
 from application.jobs_search.ports.jobs_search_repository import (
     JobsSearchRepository,
     GetJobsQueries,
     GetCompanyJobsQueries, GetCompanyDetailsQueries, GetJobDetailsQueries,
 )
+from application.jobs_search.query.get_jobs import SortType
 from ..models.job_posting import JobPosting as JobPostingORMModel
 from ..models.company import Company as CompanyORMModel
 from ..models.job_categories import JobCategory as JobCategoryORMModel
@@ -25,7 +28,7 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def get_jobs(self, queries: GetJobsQueries) -> list[JobSearchResult]:
+    async def get_jobs(self, queries: GetJobsQueries) -> JobResults:
         filters: list[ColumnElement[bool]] = []
 
         if queries.keywords:
@@ -58,65 +61,70 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
                 JobPostingORMModel.salary_range_id.in_(queries.salary_range_ids)
             )
 
+        stmt = select(JobPostingORMModel).options(selectinload(
+            JobPostingORMModel.company,
+        ), selectinload(
+            JobPostingORMModel.job_category,
+        ), selectinload(
+            JobPostingORMModel.province,
+        ), selectinload(
+            JobPostingORMModel.city,
+        ), selectinload(
+            JobPostingORMModel.salary_range,
+        )).where(*filters)
+
+        count_stmt = select(func.count()).select_from(stmt.subquery())
+        total: int = await self.session.scalar(count_stmt) or 0
+
+        if queries.sort_type == SortType.MOST_RECENT:
+            order_by = desc(JobPostingORMModel.created_at)
+        elif queries.sort_type == SortType.SALARY_DESC:
+            order_by = desc(SalaryRangeORMModel.min_salary)
+        else:
+            order_by = JobPostingORMModel.id
+
         stmt = (
-            select(
-                *JobPostingORMModel.__table__.c,
-                CompanyORMModel.persian_name.label("company_title"),
-                CompanyORMModel.name.label("company_english_title"),
-                CompanyORMModel.logo_path.label("company_logo"),
-                JobCategoryORMModel.title.label("job_category_title"),
-                ProvinceORMModel.name.label("province_title"),
-                SalaryRangeORMModel.title.label("salary_range_title"),
-                CityORMModel.name.label("city_title"),
-            )
-            .join(
-                CompanyORMModel,
-                JobPostingORMModel.company_id == CompanyORMModel.id,
-            )
-            .join(
-                JobCategoryORMModel,
-                JobPostingORMModel.job_category_id == JobCategoryORMModel.id,
-            )
-            .join(
-                ProvinceORMModel,
-                JobPostingORMModel.province_id == ProvinceORMModel.id,
-            )
-            .join(
-                SalaryRangeORMModel,
-                JobPostingORMModel.salary_range_id == SalaryRangeORMModel.id,
-            )
-            .join(
-                CityORMModel,
-                JobPostingORMModel.city_id == CityORMModel.id,
-            )
-            .where(*filters)
+            stmt
+            .order_by(order_by)
             .offset((queries.page_index - 1) * queries.page_size)
             .limit(queries.page_size)
         )
 
-        result = await self.session.execute(stmt)
-        rows = result.mappings().all()
+        result = await self.session.scalars(stmt)
+        rows = result.all()
 
-        return [
-            JobSearchResult(
-                id=row.id,
-                company_id=row.company_id,
-                company_title=row.company_title,
-                company_english_title=row.company_english_title,
-                company_logo=row.company_logo,
-                job_category_title=row.job_category_title,
-                province_title=row.province_title,
-                city_title=row.city_title,
-                salary_range_title=row.salary_range_title,
-                job_title=row.job_title,
-            )
-            for row in rows
-        ]
+        paginated_result = JobResults(
+            jobs=[
+                SearchJob(
+                    id=row.id,
+                    company_id=row.company_id,
+                    company_title=row.company.persian_name,
+                    company_english_title=row.company.name,
+                    company_logo=row.company.logo_path,
+                    job_category_title=row.job_category.title,
+                    province_title=row.province.name,
+                    city_title=row.city.name,
+                    salary_title=row.salary_range.title,
+                    job_title=row.job_title,
+                    created_at=row.created_at,
+                    employment_type=row.employment_type,
+                    work_mode=row.work_mode,
+                )
+                for row in rows
+            ],
+            pagination=Pagination(
+                total=total if total is not None else 0,
+                page_index=queries.page_index,
+                page_size=queries.page_size,
+            ),
+        )
+
+        return paginated_result
 
     async def get_company_jobs(
             self,
             queries: GetCompanyJobsQueries,
-    ) -> list[JobSearchResult]:
+    ) -> list[SearchJob]:
 
         stmt = (
             select(
@@ -126,7 +134,7 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
                 CompanyORMModel.logo_path.label("company_logo"),
                 JobCategoryORMModel.title.label("job_category_title"),
                 ProvinceORMModel.name.label("province_title"),
-                SalaryRangeORMModel.title.label("salary_range_title"),
+                SalaryRangeORMModel.title.label("salary_title"),
                 CityORMModel.name.label("city_title"),
             )
             .join(
@@ -158,7 +166,7 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
         rows = result.mappings().all()
 
         return [
-            JobSearchResult(
+            SearchJob(
                 id=row.id,
                 company_id=row.company_id,
                 company_title=row.company_title,
@@ -167,8 +175,11 @@ class SQLAlchemyJobsSearchRepository(JobsSearchRepository):
                 job_category_title=row.job_category_title,
                 province_title=row.province_title,
                 city_title=row.city_title,
-                salary_range_title=row.salary_range_title,
+                salary_title=row.salary_title,
                 job_title=row.job_title,
+                employment_type=row.employment_type,
+                created_at=row.created_at,
+                work_mode=row.work_mode,
             )
             for row in rows
         ]

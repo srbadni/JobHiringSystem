@@ -4,7 +4,8 @@ from dataclasses import dataclass
 
 from application.jobs_search.dto.job_details import JobDetails
 from application.jobs_search.dto.company_details import CompanyDetails
-from application.jobs_search.dto.job_search_result import JobSearchResult
+from application.jobs_search.dto.job_search_result import SearchJob, JobResults
+from application.jobs_search.query.get_jobs import SortType
 from domain.job_posting.enum import WorkMode, RelevantWorkExperience
 
 
@@ -12,6 +13,7 @@ from domain.job_posting.enum import WorkMode, RelevantWorkExperience
 class GetJobsQueries:
     page_size: int
     page_index: int
+    sort_type: SortType | None
     keywords: str | None = None
     province_ids: list[UUID] | None = None
     job_category_ids: list[UUID] | None = None
@@ -36,11 +38,11 @@ class GetJobDetailsQueries:
 class JobsSearchRepository(ABC):
 
     @abstractmethod
-    async def get_jobs(self, queries: GetJobsQueries) -> list[JobSearchResult]:
+    async def get_jobs(self, queries: GetJobsQueries) -> JobResults:
         pass
 
     @abstractmethod
-    async def get_company_jobs(self, queries: GetCompanyJobsQueries) -> list[JobSearchResult]:
+    async def get_company_jobs(self, queries: GetCompanyJobsQueries) -> list[SearchJob]:
         pass
 
     @abstractmethod
