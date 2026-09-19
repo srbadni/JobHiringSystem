@@ -1,10 +1,10 @@
-import {JobItem, JobQueries} from "@/entities/job-item/model/job-item";
+import {JobQueries} from "@/entities/job-item/model/job-item";
 import { httpClient } from "@/shared/api";
-import {PaginatedResponse} from "@/shared/api/type";
+import {JobSearchResultResponse} from "@/features/job-search-result/model/type";
 
 const PAGE_SIZE = 2;
 
-export const getJobs = async (pageParam: number | undefined, queries: JobQueries): Promise<PaginatedResponse<JobItem>> => {
+export const getJobs = async (pageParam: number | undefined, queries: JobQueries): Promise<JobSearchResultResponse> => {
     const result = await httpClient.get("/applicant/jobs/search", {
         params: {
             page_size: PAGE_SIZE,

@@ -6,11 +6,9 @@ import {FilterIcon} from "@/shared/ui/icons/FilterIcon";
 import JobCardItem from "@/entities/job-item/ui/job-card-item";
 import {InfiniteData, useInfiniteQuery} from "@tanstack/react-query";
 import {getJobs} from "@/entities/job-item/api/get-jobs-query";
-import {PaginatedResponse} from "@/shared/api/type";
-import {JobItem} from "@/entities/job-item/model/job-item";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import {Select} from "@/shared/ui/select";
-import {SortType} from "@/features/job-search-result/model/type";
+import {JobSearchResultResponse, SortType} from "@/features/job-search-result/model/type";
 
 interface JobSearchResultProps {
 
@@ -25,7 +23,7 @@ const JobSearchResult:FC<JobSearchResultProps> = ({}) => {
     const job_category_ids = searchParams.get("job_category_ids")?.split("|") ?? null;
     const sort_type = (searchParams.get("sort_type") ?? undefined) as SortType | undefined;
 
-    const {data: jobResults, isPending, hasNextPage, fetchNextPage} = useInfiniteQuery<PaginatedResponse<JobItem>, any, InfiniteData<PaginatedResponse<JobItem>>, any, number>({
+    const {data: jobResults, isPending, hasNextPage, fetchNextPage} = useInfiniteQuery<JobSearchResultResponse, any, InfiniteData<JobSearchResultResponse>, any, number>({
         queryKey: ["jobs", {
             keywords,
             province_ids,
@@ -34,11 +32,11 @@ const JobSearchResult:FC<JobSearchResultProps> = ({}) => {
         }],
         initialPageParam: 1,
         getNextPageParam: (lastPage) => {
-            const skippedPages = lastPage.page_size * lastPage.page_index;
-            if ((lastPage.total - skippedPages) <= 0) {
+            const skippedPages = lastPage.pagination.page_size * lastPage.pagination.page_index;
+            if ((lastPage.pagination.total - skippedPages) <= 0) {
                 return;
             }
-            return lastPage.page_index + 1;
+            return lastPage.pagination.page_index + 1;
         },
         queryFn: ({pageParam}) => getJobs(pageParam, {
             keywords,
@@ -51,7 +49,7 @@ const JobSearchResult:FC<JobSearchResultProps> = ({}) => {
     const lastPage = jobResults?.pages[jobResults?.pages.length - 1];
 
     const mergePagesJobs = jobResults?.pages.flatMap(p => (
-        p.items
+        p.jobs
     ))
 
     const handleSelect = (event: ChangeEvent<HTMLSelectElement, HTMLSelectElement>) => {
@@ -72,7 +70,7 @@ const JobSearchResult:FC<JobSearchResultProps> = ({}) => {
                 <Typography variant="small" className="!font-bold">
                     {
                         lastPage && (
-                            <span>{lastPage?.total} فرصت شغلی</span>
+                            <span>{lastPage?.pagination.total} فرصت شغلی</span>
                         )
                     }
                 </Typography>
