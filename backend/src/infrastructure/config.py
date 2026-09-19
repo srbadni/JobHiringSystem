@@ -9,6 +9,7 @@ BACKEND_ROOT = Path(__file__).resolve().parents[2]
 
 class Settings(BaseSettings):
     database_url: str
+    redis_url: str
     media_storage_path: Path = Path("var/media")
 
     model_config = SettingsConfigDict(
