@@ -1,13 +1,21 @@
+from typing import cast
+
+from fastapi import Request
+
+from application.common.ports.cache import CachePort
 from application.jobs_search.handlers.get_company_jobs_handler import GetCompanyJobsHandler
 from application.jobs_search.handlers.get_company_details_handler import GetCompanyDetailsHandler
 from application.jobs_search.handlers.get_job_details_handler import GetJobDetailsHandler
 from application.jobs_search.handlers.get_jobs_query_handler import GetJobsQueryHandler
 from infrastructure.persistence.sqlalchemy.unit_of_work import get_uow
+from infrastructure.config import settings
 
 
-def provide_jobs_result_handler() -> GetJobsQueryHandler:
+def provide_jobs_result_handler(request: Request) -> GetJobsQueryHandler:
     return GetJobsQueryHandler(
-        uow=get_uow()
+        uow=get_uow(),
+        cache=cast(CachePort, request.app.state.cache),
+        cache_ttl_seconds=settings.jobs_search_cache_ttl_seconds,
     )
 
 def provide_company_jobs_result_handler() -> GetCompanyJobsHandler:
