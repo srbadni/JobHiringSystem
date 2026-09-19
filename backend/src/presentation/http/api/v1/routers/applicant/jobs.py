@@ -2,17 +2,17 @@ from collections.abc import Callable
 from typing import Annotated
 from uuid import UUID
 from fastapi import APIRouter, Depends, Query
-from application.jobs_search.handlers.get_jobs_query_handler import GetJobsQueryHandler
+from application.jobs_search.ports.get_jobs_handler import GetJobsHandler
 from application.jobs_search.query.get_jobs import GetJobsQuery, SortType
 from domain.job_posting.enum import RelevantWorkExperience, WorkMode
 
 
-def create_jobs_router(provide_handler: Callable[..., GetJobsQueryHandler]) -> APIRouter:
+def create_jobs_router(provide_handler: Callable[..., GetJobsHandler]) -> APIRouter:
     router = APIRouter(tags=["Applicant - Jobs"])
 
     @router.get("/search")
     async def search(  # pyright: ignore[reportUnusedFunction]
-            handler: Annotated[GetJobsQueryHandler, Depends(provide_handler)],
+            handler: Annotated[GetJobsHandler, Depends(provide_handler)],
             keywords: str | None = None,
             province_ids: list[UUID] | None = Query(default=None),
             job_category_ids: list[UUID] | None = Query(default=None),
