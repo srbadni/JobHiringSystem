@@ -209,6 +209,22 @@ wheels = [
 ]
 
 [[package]]
+name = "fastapi-redis-sdk"
+version = "0.8.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "anyio" },
+    { name = "fastapi" },
+    { name = "pydantic" },
+    { name = "pydantic-settings" },
+    { name = "redis" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b8/48/1a8824d80385c1cf3f35dac11ede8d54470777267ebf04ba43bb7b906a50/fastapi_redis_sdk-0.8.0.tar.gz", hash = "sha256:a414e25ca1f41c277b06de6a640ddb1e8389e7d654280342746ce4d087dc04ed", size = 39086, upload-time = "2026-07-31T10:57:44.568Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a2/6b/433d99fe935ab3bab540a18fec67b110b04013c4a8216c4ec323989967ef/fastapi_redis_sdk-0.8.0-py3-none-any.whl", hash = "sha256:1f8d56e0279cc4941bfd6b4440d5e1bdf836ba35c10524f647aac823141ac8bd", size = 44507, upload-time = "2026-07-31T10:57:43.262Z" },
+]
+
+[[package]]
 name = "greenlet"
 version = "3.5.5"
 source = { registry = "https://pypi.org/simple" }
@@ -346,10 +362,10 @@ dependencies = [
     { name = "alembic" },
     { name = "asyncpg" },
     { name = "fastapi" },
+    { name = "fastapi-redis-sdk" },
     { name = "pwdlib", extra = ["argon2"] },
     { name = "pydantic-settings" },
     { name = "python-multipart" },
-    { name = "redis" },
     { name = "sqlalchemy", extra = ["asyncio"] },
     { name = "uvicorn" },
 ]
@@ -365,10 +381,10 @@ requires-dist = [
     { name = "alembic", specifier = ">=1.19.1" },
     { name = "asyncpg", specifier = ">=0.31.0" },
     { name = "fastapi", specifier = ">=0.141.1" },
+    { name = "fastapi-redis-sdk", specifier = ">=0.8.0" },
     { name = "pwdlib", extras = ["argon2"], specifier = ">=0.3.1" },
     { name = "pydantic-settings", specifier = ">=2.15.0" },
     { name = "python-multipart", specifier = ">=0.0.32" },
-    { name = "redis", specifier = ">=8.1.0" },
     { name = "sqlalchemy", extras = ["asyncio"], specifier = ">=2.0.52" },
     { name = "uvicorn", specifier = ">=0.52.4" },
 ]

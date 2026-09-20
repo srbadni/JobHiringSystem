@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from redis_fastapi import FastAPIRedis
 
 from bootstrap.company_activities_providers import (
     provide_create_company_activity_handler,
@@ -15,7 +16,6 @@ from bootstrap.job_categories_providers import (
     provide_list_job_categories_handler,
     provide_update_job_category_handler,
 )
-from bootstrap.lifespan import lifespan
 from bootstrap.salary_ranges_providers import (
     provide_create_salary_range_handler,
     provide_delete_salary_range_handler,
@@ -80,7 +80,8 @@ from presentation.http.exception_handlers import register_exception_handlers
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title="Job Hiring System", lifespan=lifespan)
+    app = FastAPI(title="Job Hiring System")
+    FastAPIRedis(app).lifespan().caching()
     register_exception_handlers(app)
     app.add_middleware(
         CORSMiddleware,
