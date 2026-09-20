@@ -6,6 +6,7 @@ import {Typography} from "@/shared/ui/typography";
 import {getJobDetailsQuery} from "@/entities/job-details/api/get-job-details-query";
 import {mapJobDetailsToJobItem} from "@/entities/job-item/utils/mapJobDetailsToJobItem";
 import {PrimaryButton} from "@/shared/ui/button";
+import {createJobApplication} from "@/entities/job-application/actions/actions";
 
 interface JobDetailsProps {
     params: Promise<{
@@ -54,7 +55,23 @@ const JobDetails: FC<JobDetailsProps> = async ({params}) => {
                             {jobsDetails.salary_range}
                         </Typography>
                     </div>
-                    <PrimaryButton className="ms-auto">ارسال رزومه</PrimaryButton>
+                    <form className="ms-auto" action={createJobApplication}>
+                        <input
+                            type="hidden"
+                            name="jobId"
+                            value={paramsValue.job_id}
+                        />
+
+                        <input
+                            type="hidden"
+                            name="applicant_id"
+                            value="80021f27-9b26-4368-9f16-749c058f1525"
+                        />
+
+                        <PrimaryButton type="submit">
+                            ارسال رزومه
+                        </PrimaryButton>
+                    </form>
                 </div>
             </div>
         </div>

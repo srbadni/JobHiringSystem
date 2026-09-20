@@ -10,7 +10,7 @@ class CreateJobApplicationHandler:
 
     async def handle(self, command: CreateJobApplicationCommand) -> JobApplication:
         async with self.uow:
-            application = JobApplication(
+            application = JobApplication.create(
                 applicant_id=command.applicant_id,
                 job_posting_id=command.job_posting_id,
                 folder_id=command.folder_id,
