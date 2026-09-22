@@ -11,6 +11,9 @@ class Settings(BaseSettings):
     database_url: str
     media_storage_path: Path = Path("var/media")
     redis_url: str
+    jwt_secret_key: str
+    jwt_algorithm: str
+    jwt_access_token_expire_minutes: int
 
     model_config = SettingsConfigDict(
         env_file=BACKEND_ROOT / ".env",

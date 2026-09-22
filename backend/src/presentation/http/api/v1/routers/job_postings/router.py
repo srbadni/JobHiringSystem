@@ -2,7 +2,9 @@ from typing import Annotated, Callable
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, status
+from fastapi.security import HTTPBearer
 
+from application.authentication.ports.authentication import UserClaims
 from application.job_management.command.create_job_posting import CreateJobPostingCommand
 from application.job_management.command.delete_job_posting import DeleteJobPostingCommand
 from application.job_management.command.update_job_posting import UpdateJobPostingCommand
@@ -22,6 +24,7 @@ ListJobPostingsHandlerProvider = Callable[[], ListJobPostingsQueryHandler]
 GetJobPostingByIdHandlerProvider = Callable[[], GetJobPostingByIdQueryHandler]
 UpdateJobPostingHandlerProvider = Callable[[], UpdateJobPostingHandler]
 DeleteJobPostingHandlerProvider = Callable[[], DeleteJobPostingHandler]
+GetCurrentUserProvider = Callable[..., UserClaims]
 
 def create_job_postings_router(
     provide_create_job_posting_handler: CreateJobPostingHandlerProvider,
@@ -29,9 +32,10 @@ def create_job_postings_router(
     provide_get_job_posting_by_id_handler: GetJobPostingByIdHandlerProvider,
     provide_update_job_posting_handler: UpdateJobPostingHandlerProvider,
     provide_delete_job_posting_handler: DeleteJobPostingHandlerProvider,
+    provide_get_current_user: GetCurrentUserProvider,
 ) -> APIRouter:
 
-    router = APIRouter(tags=["Company - Job Postings"])
+    router = APIRouter(tags=["Company - Job Postings"], dependencies=[Depends(provide_get_current_user)])
 
     @router.post("", status_code=status.HTTP_201_CREATED, response_model=JobPostingRead)
     async def create_job_posting( # pyright: ignore[reportUnusedFunction]
@@ -61,10 +65,13 @@ def create_job_postings_router(
 
     @router.get("", response_model=list[JobPostingRead])
     async def list_job_postings(  # pyright: ignore[reportUnusedFunction]
-            company_id: SelectedCompanyId,
+            current_user: Annotated[
+                UserClaims,
+                Depends(provide_get_current_user),
+            ],
             query_handler: Annotated[ListJobPostingsQueryHandler, Depends(provide_list_job_postings_handler)],
     ):
-        return await query_handler.handle(ListJobPostingsQuery(company_id=company_id))
+        return await query_handler.handle(ListJobPostingsQuery(user_id=current_user["user_id"]))
 
     @router.get("/{job_posting_id}", response_model=JobPostingRead)
     async def get_job_posting(  # pyright: ignore[reportUnusedFunction]

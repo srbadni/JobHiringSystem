@@ -14,6 +14,10 @@ class UserRead(BaseModel):
     profile_image_url: str | None
     user_type: UserType
 
+class LoginModel(BaseModel):
+    email: str = Field(max_length=50)
+    password: str = Field(min_length=3)
+
 class UserCreate(BaseModel):
     full_name: str = Field(min_length=3, max_length=90)
     phone_number: str = Field(pattern=r"^\d{11}$")
