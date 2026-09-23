@@ -1,0 +1,27 @@
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 28px; padding: 0; list-style: none; }
+.steps li { display: flex; flex-direction: column; align-items: center; gap: 8px; color: #647997; font-size: 13px; text-align: center; line-height: 1.8; }
+.steps li > span { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: #f1f5f9; font-weight: 700; }
+.steps li[aria-current="step"], .steps li[data-complete="true"] { color: var(--auth-accent); }
+.steps li[aria-current="step"] > span { color: white; background: var(--auth-accent); }
+.steps li[data-complete="true"] > span { background: #e5f4f1; }
+.heading { margin-bottom: 24px; font-size: 20px; font-weight: 700; outline-offset: 6px; }
+.fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+.phoneHint { margin-bottom: 22px; color: #52627d; overflow-wrap: anywhere; }
+.helper { color: #647997; font-size: 14px; line-height: 2; }
+.code { text-align: center; letter-spacing: 5px; }
+.code::placeholder { letter-spacing: normal; }
+.label { font-size: 17px; font-weight: 600; }
+.logoToggle { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.logoToggle input { width: 20px; height: 20px; accent-color: var(--auth-accent); }
+.fileLabel { display: block; margin-bottom: 10px; }
+.fileInput { height: auto; font-size: 14px; }
+.select { height: 62px; font-size: 16px; border-color: #d8e0ef; }
+.activityRow { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.textButton, .addActivity, .back { color: var(--auth-accent); cursor: pointer; }
+.addActivity { justify-self: start; padding-inline: 0; font-size: 14px; }
+.back { width: 100%; min-height: 44px; margin-top: 12px; }
+@media (max-width: 380px) {
+    .steps { gap: 6px; }
+    .steps li { font-size: 11px; }
+    .select { font-size: 14px; padding-inline: 10px; }
+}

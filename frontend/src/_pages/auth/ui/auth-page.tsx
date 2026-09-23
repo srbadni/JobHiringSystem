@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AuthForm, AuthRoleSwitch, getAuthContent, type AuthPageProps } from "@/features/authentication";
+import { AuthForm, EmployerRegistrationForm, AuthRoleSwitch, getAuthContent, type AuthPageProps } from "@/features/authentication";
 import { AuthShowcase } from "@/widgets/auth-showcase";
 import { Brand } from "@/shared/ui/brand";
 import { ArrowLeftIcon } from "@/shared/ui/icons";
@@ -24,7 +24,11 @@ export function AuthPage({ role, mode }: AuthPageProps) {
                             <Typography as="h1" variant="h1" id="auth-title" className={styles.title}>{content.title}</Typography>
                             <Typography className={styles.description} tone="muted">{content.description}</Typography>
                         </div>
-                        <AuthForm key={`${role}-${mode}`} role={role} mode={mode} />
+                        {role === "employer" && mode === "register" ? (
+                            <EmployerRegistrationForm />
+                        ) : (
+                            <AuthForm key={`${role}-${mode}`} role={role} mode={mode} />
+                        )}
                     </section>
                     <AuthShowcase role={role} />
                 </div>

@@ -17,7 +17,7 @@ export function getAuthContent(role: AuthRole, mode: AuthMode) {
         title: `${register ? "ثبت‌نام" : "ورود"} ${roleLabel}`,
         eyebrow: register ? "از اینجا شروع کن" : "خوش برگشتی",
         description: register
-            ? employer ? "حساب خودت و شرکتت را در یک مرحله بساز." : "اولین قدم برای پیدا کردن فرصت بعدی را بردار."
+            ? employer ? "حساب خودت را بساز، شماره همراهت را تأیید کن و اطلاعات شرکتت را تکمیل کن." : "اولین قدم برای پیدا کردن فرصت بعدی را بردار."
             : employer ? "برای مدیریت آگهی‌ها و درخواست‌ها وارد شو." : "وارد شو و مسیر شغلی‌ات را ادامه بده.",
         submitLabel: register
             ? employer ? "ساخت حساب و ثبت شرکت" : "ساخت حساب کارجویی"

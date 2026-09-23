@@ -1,5 +1,7 @@
 # Authentication design preview
 
+Employer registration now has a dedicated three-step flow; see [Employer registration](./employer-registration.md) for its current behavior and final `onSubmit` integration point. The notes below describe the original shared-page design.
+
 The four RTL pages follow the supplied desktop, tablet and mobile references:
 
 | Page | URL |
