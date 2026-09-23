@@ -2,7 +2,7 @@ import {JobQueries} from "@/entities/job-item/model/job-item";
 import { httpClient } from "@/shared/api";
 import {JobSearchResultResponse} from "@/features/job-search-result/model/type";
 
-const PAGE_SIZE = 2;
+const PAGE_SIZE = 15;
 
 export const getJobs = async (pageParam: number | undefined, queries: JobQueries): Promise<JobSearchResultResponse> => {
     const result = await httpClient.get("/applicant/jobs/search", {

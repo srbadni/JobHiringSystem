@@ -76,10 +76,13 @@ def create_job_postings_router(
     @router.get("/{job_posting_id}", response_model=JobPostingRead)
     async def get_job_posting(  # pyright: ignore[reportUnusedFunction]
             job_posting_id: UUID,
-            company_id: SelectedCompanyId,
+            current_user: Annotated[
+                UserClaims,
+                Depends(provide_get_current_user),
+            ],
             query_handler: Annotated[GetJobPostingByIdQueryHandler, Depends(provide_get_job_posting_by_id_handler)],
     ):
-        return await query_handler.handle(GetJobPostingByIdQuery(job_posting_id=job_posting_id, company_id=company_id))
+        return await query_handler.handle(GetJobPostingByIdQuery(job_posting_id=job_posting_id, user_id=current_user["user_id"]))
 
     @router.put("/{job_posting_id}", response_model=JobPostingRead)
     async def update_job_posting(  # pyright: ignore[reportUnusedFunction]

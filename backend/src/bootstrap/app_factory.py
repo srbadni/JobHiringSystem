@@ -41,6 +41,7 @@ from bootstrap.users_providers import (
     provide_get_user_by_id_handler,
     provide_update_user_handler,
     provide_delete_user_handler, provide_login_handler, provide_get_current_user_handler,
+    provide_employer_login_handler,
 )
 from bootstrap.jobs_result_providers import (
     provide_jobs_result_handler,
@@ -130,6 +131,7 @@ def create_app() -> FastAPI:
 
     auth_router = create_auth_router(
         provide_login_handler=provide_login_handler,
+        provide_employer_login_handler=provide_employer_login_handler,
         provide_get_current_user_handler=provide_get_current_user_handler,
         provide_create_user_handler=provide_create_user_handler,
         provide_create_employer_handler=provide_create_employer_and_company_handler,
@@ -146,7 +148,12 @@ def create_app() -> FastAPI:
 
     jobs_router = create_jobs_router(provide_jobs_result_handler)
     companies_router = create_companies_router(provide_company_details_handler, provide_company_jobs_result_handler, provide_job_details_handler)
-    applications_router = create_applications_router(provide_create_job_application_handler, provide_list_my_job_applications_handler, provide_get_job_application_handler)
+    applications_router = create_applications_router(
+        provide_create_job_application_handler,
+        provide_list_my_job_applications_handler,
+        provide_get_job_application_handler,
+        provide_get_current_user=current_user_dependency,
+    )
 
     resume_upload_router = create_resume_upload_router(
         provide_create_media_handler=provide_create_media_handler,
