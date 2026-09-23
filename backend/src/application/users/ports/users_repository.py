@@ -20,6 +20,14 @@ class UsersRepository(ABC):
         pass
 
     @abstractmethod
+    async def get_applicant_by_email(self, email: str) -> User:
+        pass
+
+    @abstractmethod
+    async def get_employer_by_email(self, email: str) -> User:
+        pass
+
+    @abstractmethod
     async def add(self, user: User) -> User:
         pass
 

@@ -47,6 +47,18 @@ class SqlAlchemyUsersRepository(UsersRepository):
         )
         return self._to_domain(result.one())
 
+    async def get_applicant_by_email(self, email: str) -> User:
+        result = await self.session.scalars(
+            select(UserModel).where(UserModel.email == email, UserModel.user_type == UserType.APPLICANT)
+        )
+        return self._to_domain(result.one())
+
+    async def get_employer_by_email(self, email: str) -> User:
+        result = await self.session.scalars(
+            select(UserModel).where(UserModel.email == email, UserModel.user_type == UserType.EMPLOYER)
+        )
+        return self._to_domain(result.one())
+
     async def exists_by_email(self, email: str) -> bool:
         stmt = select(
             exists().where(UserModel.email == email)

@@ -1,0 +1,29 @@
+.input {
+    width: 100%;
+    min-width: 0;
+    height: 62px;
+    padding: 14px 18px;
+    border: 1px solid #d8e0ef;
+    border-radius: 12px;
+    background: var(--surface);
+    color: var(--foreground);
+    font: inherit;
+    font-size: 18px;
+    outline-offset: 3px;
+}
+
+.input::placeholder { color: #7887a2; opacity: 1; }
+.input:focus-visible { outline: 2px solid var(--input-accent, var(--primary)); }
+.password { position: relative; }
+.password .input { padding-right: 58px; direction: ltr; text-align: left; }
+.toggle {
+    position: absolute;
+    top: 50%;
+    right: 9px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    transform: translateY(-50%);
+    color: #647997;
+    cursor: pointer;
+}

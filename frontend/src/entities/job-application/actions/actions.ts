@@ -4,15 +4,11 @@ import { httpClient } from "@/shared/api";
 
 export async function createJobApplication(formData: FormData) {
     const jobId = formData.get("jobId") as string;
-    const applicantId = formData.get("applicant_id") as string;
 
     try {
         await httpClient.post(`/applicant/jobs/${jobId}/applications`, {}, {
             params: {
                 job_id: jobId,
-            },
-            headers: {
-                "X-Applicant-Id": applicantId,
             }
         });
 

@@ -1,5 +1,6 @@
+from application.authentication.handler.employer_login_handler import EmployerLoginHandler
 from application.authentication.handler.get_current_user_handler import GetCurrentUserHandler
-from application.authentication.handler.login_handler import LoginHandler
+from application.authentication.handler.applicant_login_handler import ApplicantLoginHandler
 from application.users.handlers import (
     CreateUserCommandHandler,
     GetUserByEmailQueryHandler,
@@ -11,8 +12,15 @@ from application.users.handlers import (
 from bootstrap.common_providers import password_hasher, provide_uow, provide_auth
 
 
-def provide_login_handler() -> LoginHandler:
-    return LoginHandler(
+def provide_login_handler() -> ApplicantLoginHandler:
+    return ApplicantLoginHandler(
+        uow=provide_uow(),
+        hasher=password_hasher,
+        auth=provide_auth(),
+    )
+
+def provide_employer_login_handler() -> EmployerLoginHandler:
+    return EmployerLoginHandler(
         uow=provide_uow(),
         hasher=password_hasher,
         auth=provide_auth(),

@@ -1,11 +1,14 @@
 from collections.abc import Callable
 from typing import Annotated
-from fastapi import APIRouter, Depends, status, Header
+from fastapi import APIRouter, Depends, status, Header, HTTPException
 from fastapi.security import HTTPBearer
 
-from application.authentication.command.login import LoginCommand
+from application.authentication.command.applicant_login import ApplicantLoginCommand
+from application.authentication.command.employer_login import EmployerLoginCommand
+from application.authentication.exceptions import UserNotFound, IncorrectPassword
+from application.authentication.handler.employer_login_handler import EmployerLoginHandler
 from application.authentication.handler.get_current_user_handler import GetCurrentUserHandler
-from application.authentication.handler.login_handler import LoginHandler
+from application.authentication.handler.applicant_login_handler import ApplicantLoginHandler
 from application.authentication.query.get_current_user import GetCurrentUserQuery
 from application.users.command.create_user import CreateUserCommand
 from application.users.handlers import CreateUserCommandHandler
@@ -22,17 +25,36 @@ def create_auth_router(
     provide_create_user_handler: Callable[[], CreateUserCommandHandler],
     provide_create_employer_handler: Callable[[], CreateEmployerAndCompanyHandler],
     provide_get_current_user_handler: Callable[[], GetCurrentUserHandler],
-    provide_login_handler: Callable[[], LoginHandler],
+    provide_login_handler: Callable[[], ApplicantLoginHandler],
+    provide_employer_login_handler: Callable[[], EmployerLoginHandler],
 ) -> APIRouter:
     router = APIRouter(tags=["Authentication"])
 
     @router.post("/login", status_code=status.HTTP_200_OK)
     async def login(data: LoginModel, handler: Annotated[
-        LoginHandler, Depends(provide_login_handler)]):  # pyright: ignore[reportUnusedFunction]
-        return await handler.handle(LoginCommand(
-            email=data.email,
-            password=data.password,
-        ))
+        ApplicantLoginHandler, Depends(provide_login_handler)]):  # pyright: ignore[reportUnusedFunction]
+        try:
+            return await handler.handle(ApplicantLoginCommand(
+                email=data.email,
+                password=data.password,
+            ))
+        except UserNotFound:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        except IncorrectPassword:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="incorrect password")
+
+    @router.post("/employer-login", status_code=status.HTTP_200_OK)
+    async def login(data: LoginModel, handler: Annotated[
+        EmployerLoginHandler, Depends(provide_employer_login_handler)]):  # pyright: ignore[reportUnusedFunction]
+        try:
+            return await handler.handle(EmployerLoginCommand(
+                email=data.email,
+                password=data.password,
+            ))
+        except UserNotFound:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        except IncorrectPassword:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="incorrect password")
 
     @router.get("/users/me", status_code=status.HTTP_200_OK)
     async def get_me(
