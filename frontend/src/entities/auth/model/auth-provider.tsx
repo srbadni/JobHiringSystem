@@ -24,15 +24,6 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
         () => localStorageService.get<User>(USER_KEY),
     );
 
-    const {dataUpdatedAt, isSuccess, data} = useQuery({
-        queryKey: ["users", accessToken],
-        queryFn: async () => {
-            const result = await httpClient.get("/auth/users/me");
-            return result.data;
-        },
-        enabled: !!accessToken,
-    })
-
     const setUser = useCallback((user: User) => {
         localStorageService.set(USER_KEY, user);
         setUserState(user);
@@ -63,11 +54,26 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
         [user, accessToken, setAccessToken, setUser, logout],
     );
 
+    const {dataUpdatedAt, errorUpdatedAt, isSuccess, isError, data} = useQuery({
+        queryKey: ["users", accessToken],
+        queryFn: async () => {
+            const result = await httpClient.get("/auth/users/me");
+            return result.data;
+        },
+        enabled: !!accessToken,
+    })
+
     useEffect(() => {
         if (isSuccess) {
             setUser(data)
         }
     }, [dataUpdatedAt]);
+
+    useEffect(() => {
+        if (isError) {
+            logout()
+        }
+    }, [errorUpdatedAt]);
 
     return (
         <AuthContext.Provider value={value}>
