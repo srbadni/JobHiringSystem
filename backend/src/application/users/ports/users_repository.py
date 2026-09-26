@@ -12,19 +12,19 @@ class UsersRepository(ABC):
         pass
 
     @abstractmethod
-    async def get_by_id(self, user_id: UUID) -> User:
+    async def get_by_id(self, user_id: UUID) -> User | None:
         pass
 
     @abstractmethod
-    async def get_by_email(self, email: str) -> User:
+    async def get_by_email(self, email: str) -> User | None:
         pass
 
     @abstractmethod
-    async def get_applicant_by_email(self, email: str) -> User:
+    async def get_applicant_by_email(self, email: str) -> User | None:
         pass
 
     @abstractmethod
-    async def get_employer_by_email(self, email: str) -> User:
+    async def get_employer_by_email(self, email: str) -> User | None:
         pass
 
     @abstractmethod

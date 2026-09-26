@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from redis_fastapi import FastAPIRedis
 
 from bootstrap.common_providers import current_user_dependency
+from bootstrap.companies_providers import provide_add_company_handler
 from bootstrap.company_activities_providers import (
     provide_create_company_activity_handler,
     provide_delete_company_activity_handler,
@@ -135,6 +136,7 @@ def create_app() -> FastAPI:
         provide_get_current_user_handler=provide_get_current_user_handler,
         provide_create_user_handler=provide_create_user_handler,
         provide_create_employer_handler=provide_create_employer_and_company_handler,
+        provide_add_company_handler=provide_add_company_handler,
     )
 
     job_postings_router = create_job_postings_router(

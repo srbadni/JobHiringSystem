@@ -10,23 +10,25 @@ from application.authentication.handler.employer_login_handler import EmployerLo
 from application.authentication.handler.get_current_user_handler import GetCurrentUserHandler
 from application.authentication.handler.applicant_login_handler import ApplicantLoginHandler
 from application.authentication.query.get_current_user import GetCurrentUserQuery
+from application.companies.handlers.create_company_handler import CreateCompanyHandler
 from application.users.command.create_user import CreateUserCommand
 from application.users.handlers import CreateUserCommandHandler
 from application.employer_registration.command.create_employer_and_company import CreateEmployerAndCompany
-from application.employer_registration.handlers.create_employer_and_company_handler import CreateEmployerAndCompanyHandler
+from application.employer_registration.handlers.create_employer_handler import CreateEmployerHandler
 from application.companies.command.create_company import CreateCompanyCommand
 from domain.user.enums import UserType
 from presentation.http.api.v1.routers.users.schemas import UserCreate, UserRead, LoginModel
-from presentation.http.api.v1.routers.employer.schemas import EmployerCompanyCreate, EmployerRead
+from presentation.http.api.v1.routers.employer.schemas import EmployerRead, EmployerCreate, CompanyRead, CompanyCreate
 
 security = HTTPBearer()
 
 def create_auth_router(
     provide_create_user_handler: Callable[[], CreateUserCommandHandler],
-    provide_create_employer_handler: Callable[[], CreateEmployerAndCompanyHandler],
+    provide_create_employer_handler: Callable[[], CreateEmployerHandler],
     provide_get_current_user_handler: Callable[[], GetCurrentUserHandler],
     provide_login_handler: Callable[[], ApplicantLoginHandler],
     provide_employer_login_handler: Callable[[], EmployerLoginHandler],
+    provide_add_company_handler: Callable[[], CreateCompanyHandler],
 ) -> APIRouter:
     router = APIRouter(tags=["Authentication"])
 
@@ -75,14 +77,31 @@ def create_auth_router(
         ))
 
     @router.post("/register/employer", status_code=status.HTTP_201_CREATED, response_model=EmployerRead)
-    async def register_employer(data: EmployerCompanyCreate, handler: Annotated[CreateEmployerAndCompanyHandler, Depends(provide_create_employer_handler)]):  # pyright: ignore[reportUnusedFunction]
-        employer = data.employer
-        company = data.company
-        command = CreateEmployerAndCompany(
-            employer=CreateUserCommand(full_name=employer.full_name, phone_number=employer.phone_number,
-                email=employer.email, password=employer.password, profile_image_url=employer.profile_image_url,
-                user_type=UserType.EMPLOYER),
-            company=CreateCompanyCommand(**company.model_dump()),
+    async def register_employer(employer: EmployerCreate, handler: Annotated[CreateEmployerHandler, Depends(provide_create_employer_handler)]):  # pyright: ignore[reportUnusedFunction]
+        command = CreateUserCommand(
+            full_name=employer.full_name,
+            phone_number=employer.phone_number,
+            email=employer.email,
+            password=employer.password,
+            profile_image_url=employer.profile_image_url,
+            user_type=UserType.EMPLOYER,
+        )
+        return await handler.handle(command)
+
+    @router.post("/register/company", status_code=status.HTTP_201_CREATED, response_model=CompanyRead)
+    async def register_company(company: CompanyCreate, handler: Annotated[
+        CreateCompanyHandler, Depends(provide_add_company_handler)]):  # pyright: ignore[reportUnusedFunction]
+        command = CreateCompanyCommand(
+            name=company.name,
+            persian_name=company.persian_name,
+            phone_number=company.phone_number,
+            province_id=company.province_id,
+            city_id=company.city_id,
+            activity_id=company.activity_id,
+            personnel_count=company.personnel_count,
+            logo_path=company.logo_path,
+            description=company.description,
+            website=company.website,
         )
         return await handler.handle(command)
     return router

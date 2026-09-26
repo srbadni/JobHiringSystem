@@ -35,29 +35,37 @@ class SqlAlchemyUsersRepository(UsersRepository):
         result = await self.session.scalars(statement)
         return [self._to_domain(model) for model in result.all()]
 
-    async def get_by_id(self, user_id: UUID) -> User:
-        result = await self.session.scalars(
+    async def get_by_id(self, user_id: UUID) -> User | None:
+        result = await self.session.scalar(
             select(UserModel).where(UserModel.id == user_id)
         )
-        return self._to_domain(result.one())
+        if not result:
+            return None
+        return self._to_domain(result)
 
-    async def get_by_email(self, email: str) -> User:
-        result = await self.session.scalars(
+    async def get_by_email(self, email: str) -> User | None:
+        result = await self.session.scalar(
             select(UserModel).where(UserModel.email == email)
         )
-        return self._to_domain(result.one())
+        if not result:
+            return None
+        return self._to_domain(result)
 
-    async def get_applicant_by_email(self, email: str) -> User:
-        result = await self.session.scalars(
+    async def get_applicant_by_email(self, email: str) -> User | None:
+        result = await self.session.scalar(
             select(UserModel).where(UserModel.email == email, UserModel.user_type == UserType.APPLICANT)
         )
-        return self._to_domain(result.one())
+        if not result:
+            return None
+        return self._to_domain(result)
 
-    async def get_employer_by_email(self, email: str) -> User:
-        result = await self.session.scalars(
+    async def get_employer_by_email(self, email: str) -> User | None:
+        result = await self.session.scalar(
             select(UserModel).where(UserModel.email == email, UserModel.user_type == UserType.EMPLOYER)
         )
-        return self._to_domain(result.one())
+        if not result:
+            return None
+        return self._to_domain(result)
 
     async def exists_by_email(self, email: str) -> bool:
         stmt = select(

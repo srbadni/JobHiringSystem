@@ -2,15 +2,15 @@ from typing import Annotated, Callable
 
 from fastapi import APIRouter, Depends, status
 
-from application.employer_registration.handlers.create_employer_and_company_handler import \
-    CreateEmployerAndCompanyHandler
+from application.employer_registration.handlers.create_employer_handler import \
+    CreateEmployerHandler
 from application.users.command.create_user import CreateUserCommand
 from application.companies.command.create_company import CreateCompanyCommand
 from application.employer_registration.command.create_employer_and_company import CreateEmployerAndCompany
 
 from .schemas import EmployerCompanyCreate, EmployerRead
 
-CreateEmployerAndCompanyHandlerProvider = Callable[[], CreateEmployerAndCompanyHandler]
+CreateEmployerAndCompanyHandlerProvider = Callable[[], CreateEmployerHandler]
 
 
 def create_employer_router(
@@ -22,7 +22,7 @@ def create_employer_router(
     async def create_employer_and_company(  # pyright: ignore[reportUnusedFunction]
             employer_company_data: EmployerCompanyCreate,
             command_handler: Annotated[
-                CreateEmployerAndCompanyHandler, Depends(provide_create_employer_and_company_handler)]
+                CreateEmployerHandler, Depends(provide_create_employer_and_company_handler)]
     ):
         user_command = CreateUserCommand(
             full_name=employer_company_data.employer.full_name,

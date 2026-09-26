@@ -25,7 +25,6 @@ class UserCreate(BaseModel):
     password: str = Field(min_length=3)
     profile_image_url: str | None = Field(default=None)
     user_type: UserType = UserType.APPLICANT
-    company: CompanyCreate | None = None
 
 
 class UserUpdate(BaseModel):
