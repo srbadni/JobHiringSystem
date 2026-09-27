@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from redis_fastapi import FastAPIRedis
 
+from bootstrap.common_providers import current_user_dependency
+from bootstrap.companies_providers import provide_add_company_handler
 from bootstrap.company_activities_providers import (
     provide_create_company_activity_handler,
     provide_delete_company_activity_handler,
@@ -38,7 +41,8 @@ from bootstrap.users_providers import (
     provide_get_user_by_email_handler,
     provide_get_user_by_id_handler,
     provide_update_user_handler,
-    provide_delete_user_handler,
+    provide_delete_user_handler, provide_login_handler, provide_get_current_user_handler,
+    provide_employer_login_handler,
 )
 from bootstrap.jobs_result_providers import (
     provide_jobs_result_handler,
@@ -80,6 +84,7 @@ from presentation.http.exception_handlers import register_exception_handlers
 
 def create_app() -> FastAPI:
     app = FastAPI(title="Job Hiring System")
+    FastAPIRedis(app).lifespan().caching()
     register_exception_handlers(app)
     app.add_middleware(
         CORSMiddleware,
@@ -126,8 +131,12 @@ def create_app() -> FastAPI:
     )
 
     auth_router = create_auth_router(
+        provide_login_handler=provide_login_handler,
+        provide_employer_login_handler=provide_employer_login_handler,
+        provide_get_current_user_handler=provide_get_current_user_handler,
         provide_create_user_handler=provide_create_user_handler,
         provide_create_employer_handler=provide_create_employer_and_company_handler,
+        provide_add_company_handler=provide_add_company_handler,
     )
 
     job_postings_router = create_job_postings_router(
@@ -136,11 +145,24 @@ def create_app() -> FastAPI:
         provide_get_job_posting_by_id_handler=provide_get_job_posting_by_id_handler,
         provide_update_job_posting_handler=provide_update_job_posting_handler,
         provide_delete_job_posting_handler=provide_delete_job_posting_handler,
+        provide_get_current_user=current_user_dependency,
     )
 
     jobs_router = create_jobs_router(provide_jobs_result_handler)
-    companies_router = create_companies_router(provide_company_details_handler, provide_company_jobs_result_handler, provide_job_details_handler)
-    applications_router = create_applications_router(provide_create_job_application_handler, provide_list_my_job_applications_handler, provide_get_job_application_handler)
+
+    companies_router = create_companies_router(
+        provide_company_details_handler,
+        provide_company_jobs_result_handler,
+        provide_job_details_handler,
+        provide_get_current_user=current_user_dependency,
+    )
+
+    applications_router = create_applications_router(
+        provide_create_job_application_handler,
+        provide_list_my_job_applications_handler,
+        provide_get_job_application_handler,
+        provide_get_current_user=current_user_dependency,
+    )
 
     resume_upload_router = create_resume_upload_router(
         provide_create_media_handler=provide_create_media_handler,

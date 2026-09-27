@@ -13,6 +13,11 @@ class UserRead(BaseModel):
     email: str
     profile_image_url: str | None
     user_type: UserType
+    is_profile_completed: bool
+
+class LoginModel(BaseModel):
+    email: str = Field(max_length=50)
+    password: str = Field(min_length=3)
 
 class UserCreate(BaseModel):
     full_name: str = Field(min_length=3, max_length=90)
@@ -21,7 +26,6 @@ class UserCreate(BaseModel):
     password: str = Field(min_length=3)
     profile_image_url: str | None = Field(default=None)
     user_type: UserType = UserType.APPLICANT
-    company: CompanyCreate | None = None
 
 
 class UserUpdate(BaseModel):

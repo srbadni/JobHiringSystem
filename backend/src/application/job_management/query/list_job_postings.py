@@ -4,4 +4,4 @@ from uuid import UUID
 
 @dataclass(frozen=True, slots=True)
 class ListJobPostingsQuery:
-    company_id: UUID
+    user_id: str

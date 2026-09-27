@@ -1,0 +1,7 @@
+.brand { display: inline-flex; align-items: center; gap: 12px; color: var(--foreground); font-size: 36px; font-weight: 800; line-height: 1; white-space: nowrap; }
+.mark { display: grid; grid-template-columns: repeat(2, 15px); gap: 4px; transform: rotate(-8deg); }
+.mark i { height: 15px; border-radius: 3px; background: var(--primary); }
+.mark i:nth-child(2) { background: var(--secondary); }
+.mark i:nth-child(3) { background: #a5b4fc; }
+.dot { display: inline-block; width: 9px; height: 9px; margin-inline-start: 4px; background: var(--primary); vertical-align: baseline; }
+@media (max-width: 767px) { .brand { font-size: 32px; gap: 10px; } }

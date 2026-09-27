@@ -1,0 +1,2 @@
+class UserTypeError(Exception):
+    pass

@@ -1,3 +1,6 @@
+from uuid import UUID
+
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from application.company_membership.ports.company_membership_repository import CompanyMembershipRepository
@@ -19,6 +22,15 @@ class SqlAlchemyCompanyMembershipRepository(CompanyMembershipRepository):
 
     def __init__(self, session: AsyncSession):
         self.session = session
+
+    async def get_by_user_id(self, user_id: UUID) -> CompanyMembership | None:
+        stmt = select(CompanyMembershipORMModel).where(CompanyMembershipORMModel.user_id == user_id)
+        company_membership : CompanyMembershipORMModel | None = await self.session.scalar(stmt)
+
+        if company_membership is None:
+            return None
+
+        return self._to_domain(company_membership)
 
     async def add(self, company_membership: CompanyMembership) -> CompanyMembership:
 

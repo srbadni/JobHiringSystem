@@ -5,8 +5,11 @@ export function SiteHeader() {
   return (
     <header className="flex items-center bg-surface p-2">
       <span>logo</span>
-      <Typography className="ms-auto me-4">ورود / ثبت نام</Typography>
+      <Link href="/auth/job-seeker/login" className="ms-auto me-4">
+        <Typography>ورود / ثبت نام</Typography>
+      </Link>
       <MenuIcon />
     </header>
   );
 }
+import Link from "next/link";

@@ -1,7 +1,7 @@
 from uuid import UUID
 from typing import Annotated
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 
 from domain.company.enums import EmployeeCount
 
@@ -45,6 +45,11 @@ class CompanyCreate(BaseModel):
             if not value:
                 raise ValueError("name must not be blank")
         return value
+
+class CompanyRead(CompanyCreate):
+    id: UUID
+
+    model_config = ConfigDict(from_attributes=True)
 
 class EmployerCompanyCreate(BaseModel):
     employer: EmployerCreate

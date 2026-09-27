@@ -7,7 +7,7 @@ from domain.user.enums import UserType
 from application.users.command.update_user import UpdateUserCommand
 from application.users.command.delete_user import DeleteUserCommand
 from application.users.handlers import UpdateUserCommandHandler, DeleteUserCommandHandler
-from application.employer_registration.handlers.create_employer_and_company_handler import CreateEmployerAndCompanyHandler
+from application.employer_registration.handlers.create_employer_handler import CreateEmployerHandler
 from application.employer_registration.command.create_employer_and_company import CreateEmployerAndCompany
 from application.companies.command.create_company import CreateCompanyCommand
 
@@ -26,7 +26,7 @@ GetUserByIdHandlerProvider = Callable[[], GetUserByIdQueryHandler]
 ListUsersHandlerProvider = Callable[[], ListUsersQueryHandler]
 UpdateUserHandlerProvider = Callable[[], UpdateUserCommandHandler]
 DeleteUserHandlerProvider = Callable[[], DeleteUserCommandHandler]
-CreateEmployerHandlerProvider = Callable[[], CreateEmployerAndCompanyHandler]
+CreateEmployerHandlerProvider = Callable[[], CreateEmployerHandler]
 
 
 def create_users_router(
@@ -58,17 +58,9 @@ def create_users_router(
             email=user_data.email,
             password=user_data.password,
             profile_image_url=user_data.profile_image_url,
-            user_type=user_data.user_type,
+            user_type=UserType.APPLICANT,
         )
 
-        if user_data.user_type is UserType.EMPLOYER:
-            if user_data.company is None:
-                raise ValueError("company is required for an employer account")
-            employer_handler = provide_create_employer_handler()
-            return await employer_handler.handle(CreateEmployerAndCompany(
-                employer=command,
-                company=CreateCompanyCommand(**user_data.company.model_dump()),
-            ))
         return await command_handler.handle(command)
 
     @router.get("", response_model=list[UserRead])

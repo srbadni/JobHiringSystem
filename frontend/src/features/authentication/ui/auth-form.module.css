@@ -1,0 +1,36 @@
+.roles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 6px; gap: 6px; border-radius: 15px; background: #f1f5f9; }
+.roles a { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 56px; border-radius: 11px; color: #52627d; font-size: 17px; font-weight: 600; }
+.roles a[aria-current="page"] { background: white; color: var(--auth-accent); box-shadow: 0 3px 9px #0f172a03; }
+.roles a:focus-visible, .alternate a:focus-visible { outline: 2px solid var(--auth-accent); outline-offset: 3px; }
+.form { margin-top: 36px; }
+.fields { display: grid; gap: 24px 20px; }
+.field { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.field label { font-size: 17px; font-weight: 600; }
+.hint { display: flex; align-items: center; gap: 8px; color: #647997; font-size: 17px; }
+.forgot { display: flex; justify-content: flex-end; margin-top: 22px; }
+.forgot button { color: var(--auth-accent); font-size: 17px; font-weight: 600; cursor: not-allowed; text-align: start; }
+.submit { display: flex; gap: 14px; width: 100%; min-height: 66px; margin-top: 30px; border-radius: 12px; background: var(--auth-accent); color: white; font-size: 20px; font-weight: 700; cursor: pointer; }
+.forgot + .submit { margin-top: 40px; }
+.submit:hover { background: var(--auth-hover); }
+.submit:focus-visible { outline-color: var(--auth-accent); }
+.alternate { display: flex; justify-content: center; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 28px; color: #647997; font-size: 17px; }
+.alternate a { display: inline-flex; align-items: center; gap: 8px; color: var(--auth-accent); font-weight: 600; min-height: 40px; }
+.notice { display: flex; align-items: flex-start; gap: 10px; border-top: 1px solid #e9eef6; margin-top: 30px; padding-top: 20px; }
+.notice svg { flex-shrink: 0; margin-top: 6px; color: #647997; }
+.noticeText { color: #647997; font-size: 15px; line-height: 2; }
+.feedback { margin-top: 14px; color: #647997; }
+@media (min-width: 1200px) {
+    .registration { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .fullWidth { grid-column: 1 / -1; }
+}
+@media (max-width: 767px) {
+    .form { margin-top: 28px; }
+    .fields { gap: 22px; }
+    .roles a { gap: 10px; }
+    .notice { margin-top: 30px; }
+}
+@media (max-width: 380px) {
+    .roles a { font-size: 14px; gap: 6px; }
+    .submit { font-size: 17px; gap: 8px; }
+    .alternate { font-size: 15px; gap: 6px; }
+}
