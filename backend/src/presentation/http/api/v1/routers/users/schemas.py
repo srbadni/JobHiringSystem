@@ -13,6 +13,7 @@ class UserRead(BaseModel):
     email: str
     profile_image_url: str | None
     user_type: UserType
+    is_profile_completed: bool
 
 class LoginModel(BaseModel):
     email: str = Field(max_length=50)

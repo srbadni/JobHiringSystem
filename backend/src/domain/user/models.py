@@ -15,6 +15,18 @@ class User:
     is_superuser: bool = False
     email_verified: bool = False
     profile_image_url: str | None = None
+    is_profile_completed: bool = False
+
+    def update_profile_completion(self, *, has_company_membership: bool) -> None:
+        if self.user_type == UserType.EMPLOYER:
+            if has_company_membership:
+                self.is_profile_completed = True
+                return
+            self.is_profile_completed = False
+            return
+        else:
+            self.is_profile_completed = True
+            return
 
     @classmethod
     def create(

@@ -58,15 +58,18 @@ def create_auth_router(
         except IncorrectPassword:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="incorrect password")
 
-    @router.get("/users/me", status_code=status.HTTP_200_OK)
+    @router.get("/users/me", status_code=status.HTTP_200_OK, response_model=UserRead)
     async def get_me(
             handler: Annotated[
                 GetCurrentUserHandler, Depends(provide_get_current_user_handler)],
             credentials = Depends(security),
     ):  # pyright: ignore[reportUnusedFunction]
-        return await handler.handle(GetCurrentUserQuery(
-            access_token=credentials.credentials
-        ))
+        try:
+            return await handler.handle(GetCurrentUserQuery(
+                access_token=credentials.credentials
+            ))
+        except UserNotFound:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
     @router.post("/register/applicant", status_code=status.HTTP_201_CREATED, response_model=UserRead)
     async def register_applicant(data: UserCreate, handler: Annotated[CreateUserCommandHandler, Depends(provide_create_user_handler)]):  # pyright: ignore[reportUnusedFunction]
